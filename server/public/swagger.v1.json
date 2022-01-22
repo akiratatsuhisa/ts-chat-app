@@ -1,0 +1,129 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Chat app Backend API",
+        "description": "",
+        "version": "1.0.0",
+        "contact": {
+            "name": "Đặng Minh Đạt",
+            "email": "dangminhdat.180898@gmail.com"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:4000",
+            "description": "Localhost server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Chat",
+            "description": "Everything about chatrooms."
+        },
+        {
+            "name": "User Management",
+            "description": "Operations about user"
+        }
+    ],
+    "security": {
+        "bearerAuth": []
+    },
+    "paths": {
+        "/api/chatRooms": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Chat"
+                ]
+            }
+        },
+        "/api/chatRooms/{chatRoomId}": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Chat"
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Chat"
+                ]
+            }
+        },
+        "/api/users/register": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ]
+            }
+        },
+        "/api/users/login": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ChatRoom": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "users": {
+                        "type": "array",
+                        "items": {
+                            "oneOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
