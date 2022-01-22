@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { UnauthorizedResponse } from "../helpers/constant";
 import { verifyJwtToken } from "../services/auth.service";
 
 export const authenticate = (
@@ -14,6 +15,8 @@ export const authenticate = (
   if (!authorization?.startsWith("Bearer ")) {
     return next();
   }
+
+  console.log("test");
   const token: string = authorization.split(" ")[1];
   const user = verifyJwtToken(token);
 
@@ -23,7 +26,6 @@ export const authenticate = (
 };
 
 export const authorize = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.isAuthenticated)
-    return res.status(401).json({ message: "Unauthenticated." });
+  if (!req.isAuthenticated) return res.status(401).json(UnauthorizedResponse);
   next();
 };

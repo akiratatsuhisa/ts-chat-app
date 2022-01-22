@@ -39,7 +39,7 @@ const swaggerOptions: SwaggerUiOptions = {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
 
-  app.use(authenticate);
+  app.use("/api/*", authenticate);
   app.use(
     "/api/docs",
     swaggerUi.serve,
@@ -47,13 +47,14 @@ const swaggerOptions: SwaggerUiOptions = {
   );
 
   //app route
-  app.use("/api/users/", usersRouter);
-  app.use("/api/chatRooms/", authorize, chatRoomsRouter);
+  app.use("/api/users", usersRouter);
+  app.use("/api/chatRooms", authorize, chatRoomsRouter);
 
   // app run
-  const server = app.listen(PORT, () =>
-    console.log(`App listening at http://localhost:${PORT} 🚀`)
-  );
+  const server = app.listen(PORT, () => {
+    console.log(`App listening at http://localhost:${PORT} 🚀`);
+    console.log(`Api docs link http://localhost:${PORT}/api/docs 🛰`);
+  });
 
   const io = startSocketIo(server);
   registerChatSocket(io.of("/chat"));

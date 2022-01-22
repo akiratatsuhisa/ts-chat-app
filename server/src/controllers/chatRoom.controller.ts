@@ -1,5 +1,9 @@
 import { IRouter, Request, Response, Router } from "express";
 import { body, query, validationResult } from "express-validator";
+import {
+  IErrorModelMessageResponse,
+  NotFoundResponse,
+} from "../helpers/constant";
 import { ChatRoom } from "../models/ChatRoom.model";
 
 export const chatRoomsRouter: IRouter = Router();
@@ -15,14 +19,15 @@ chatRoomsRouter.get(
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ message: "Request is invalid.", errors: errors.array() });
+      return res.status(400).json({
+        message: "Request is invalid.",
+        errors: errors.array(),
+      } as IErrorModelMessageResponse);
     }
 
     const chatRoom = await ChatRoom.findById(req.params.id);
     if (!chatRoom) {
-      res.status(404).json({ message: "Notfound" });
+      res.status(404).json(NotFoundResponse);
     }
 
     res.status(200).json(chatRoom);
@@ -37,9 +42,10 @@ chatRoomsRouter.post(
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ message: "Request is invalid.", errors: errors.array() });
+      return res.status(400).json({
+        message: "Request is invalid.",
+        errors: errors.array(),
+      } as IErrorModelMessageResponse);
     }
 
     const { name } = req.body;
@@ -62,9 +68,10 @@ chatRoomsRouter.put(
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty() || req.params.id !== req.body.id) {
-      return res
-        .status(400)
-        .json({ message: "Request is invalid.", errors: errors.array() });
+      return res.status(400).json({
+        message: "Request is invalid.",
+        errors: errors.array(),
+      } as IErrorModelMessageResponse);
     }
 
     const { id, name } = req.body;
@@ -79,7 +86,7 @@ chatRoomsRouter.put(
     );
 
     if (!chatRoom) {
-      res.status(404).json({ message: "Notfound" });
+      res.status(404).json(NotFoundResponse);
     }
     res.status(200).json(chatRoom);
   }
@@ -98,7 +105,10 @@ chatRoomsRouter.delete(
     if (!errors.isEmpty() || req.params.id !== req.body.id) {
       return res
         .status(400)
-        .json({ message: "Request is invalid.", errors: errors.array() });
+        .json({
+          message: "Request is invalid.",
+          errors: errors.array(),
+        } as IErrorModelMessageResponse);
     }
 
     const { id } = req.body;
@@ -106,7 +116,7 @@ chatRoomsRouter.delete(
     const chatRoom = await ChatRoom.findByIdAndDelete(id);
 
     if (!chatRoom) {
-      res.status(404).json({ message: "Notfound" });
+      res.status(404).json(NotFoundResponse);
     }
     res.status(200).json(chatRoom);
   }

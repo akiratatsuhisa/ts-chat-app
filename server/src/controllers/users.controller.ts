@@ -2,6 +2,10 @@ import { IRouter, Request, Response, Router } from "express";
 import { oneOf, body, validationResult } from "express-validator";
 import { generateJwtToken } from "../services/auth.service";
 import { IUser, User } from "../models/User.model";
+import {
+  IErrorModelMessageResponse,
+  IDefaultMessageResponse,
+} from "../helpers/constant";
 
 export const usersRouter: IRouter = Router();
 
@@ -18,9 +22,10 @@ usersRouter.post(
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ message: "Request is invalid.", errors: errors.array() });
+      return res.status(400).json({
+        message: "Request is invalid.",
+        errors: errors.array(),
+      } as IErrorModelMessageResponse);
     }
 
     try {
@@ -29,10 +34,14 @@ usersRouter.post(
       const user = new User({ username, email, displayName });
       await user.setPassword(password);
       await user.save();
-      res.status(201).json({ message: "Register successfully." });
+      res
+        .status(201)
+        .json({ message: "Register successfully." } as IDefaultMessageResponse);
     } catch (e) {
       console.log(e);
-      res.status(400).json({ message: "Register failed." });
+      res
+        .status(400)
+        .json({ message: "Register failed." } as IDefaultMessageResponse);
     }
   }
 );
@@ -48,9 +57,10 @@ usersRouter.post(
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ message: "Request is invalid.", errors: errors.array() });
+      return res.status(400).json({
+        message: "Request is invalid.",
+        errors: errors.array(),
+      } as IErrorModelMessageResponse);
     }
 
     try {
@@ -58,16 +68,18 @@ usersRouter.post(
 
       const user = await User.findByUsername(username);
       if (!(await user?.checkPassword(password)))
-        return res
-          .status(400)
-          .json({ message: "Username or password is invalid." });
+        return res.status(400).json({
+          message: "Username or password is invalid.",
+        } as IDefaultMessageResponse);
 
       res.status(200).json({
         message: "Login successfully.",
         token: generateJwtToken(user),
       });
     } catch {
-      res.status(400).json({ message: "Login failed." });
+      res
+        .status(400)
+        .json({ message: "Login failed." } as IDefaultMessageResponse);
     }
   }
 );
