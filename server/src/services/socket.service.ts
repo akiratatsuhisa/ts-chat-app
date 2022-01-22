@@ -1,5 +1,6 @@
 import { Server as HttpServer } from "http";
 import { Server, Socket, Namespace, ServerOptions } from "socket.io";
+import { ChatRoom } from "../models/ChatRoom.model";
 import { ChatMessage } from "../models/ChatMessage.model";
 import { verifyJwtToken } from "./auth.service";
 
@@ -66,7 +67,10 @@ export const registerChatSocket = (
 
     socket.on("sendMessage", async ({ chatRoomId, content }) => {
       content = content?.trim();
-      if (!content) {
+      if (
+        !content ||
+        !(await ChatRoom.hasUserInRoom(chatRoomId, socket.data.user.id))
+      ) {
         return;
       }
 

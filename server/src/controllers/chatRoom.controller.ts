@@ -1,6 +1,7 @@
 import { IRouter, Request, Response, Router } from "express";
 import { body, query, validationResult } from "express-validator";
 import {
+  ForbiddenResponse,
   IErrorModelMessageResponse,
   NotFoundResponse,
 } from "../helpers/constant";
@@ -25,9 +26,13 @@ chatRoomsRouter.get(
       } as IErrorModelMessageResponse);
     }
 
+    if (!(await ChatRoom.hasUserInRoom(req.params.id, req.user?.id))) {
+      return res.status(403).json(ForbiddenResponse);
+    }
+
     const chatRoom = await ChatRoom.findById(req.params.id);
     if (!chatRoom) {
-      res.status(404).json(NotFoundResponse);
+      return res.status(404).json(NotFoundResponse);
     }
 
     res.status(200).json(chatRoom);
@@ -74,6 +79,10 @@ chatRoomsRouter.put(
       } as IErrorModelMessageResponse);
     }
 
+    if (!(await ChatRoom.hasUserInRoom(req.params.id, req.user?.id))) {
+      return res.status(404).json(ForbiddenResponse);
+    }
+
     const { id, name } = req.body;
 
     const chatRoom = await ChatRoom.findByIdAndUpdate(
@@ -86,7 +95,7 @@ chatRoomsRouter.put(
     );
 
     if (!chatRoom) {
-      res.status(404).json(NotFoundResponse);
+      return res.status(403).json(NotFoundResponse);
     }
     res.status(200).json(chatRoom);
   }
@@ -103,12 +112,14 @@ chatRoomsRouter.delete(
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty() || req.params.id !== req.body.id) {
-      return res
-        .status(400)
-        .json({
-          message: "Request is invalid.",
-          errors: errors.array(),
-        } as IErrorModelMessageResponse);
+      return res.status(400).json({
+        message: "Request is invalid.",
+        errors: errors.array(),
+      } as IErrorModelMessageResponse);
+    }
+
+    if (!(await ChatRoom.hasUserInRoom(req.params.id, req.user?.id))) {
+      return res.status(403).json(ForbiddenResponse);
     }
 
     const { id } = req.body;
@@ -116,7 +127,7 @@ chatRoomsRouter.delete(
     const chatRoom = await ChatRoom.findByIdAndDelete(id);
 
     if (!chatRoom) {
-      res.status(404).json(NotFoundResponse);
+      return res.status(404).json(NotFoundResponse);
     }
     res.status(200).json(chatRoom);
   }
