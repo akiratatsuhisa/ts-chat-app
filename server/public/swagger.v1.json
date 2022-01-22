@@ -1,344 +1,468 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-        "title": "Chat app Backend API",
-        "description": "",
-        "version": "1.0.0",
-        "contact": {
-            "name": "Đặng Minh Đạt",
-            "email": "dangminhdat.180898@gmail.com"
-        }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Chat app Backend API",
+    "description": "",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Đặng Minh Đạt",
+      "email": "dangminhdat.180898@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Localhost server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Chat",
+      "description": "Everything about chatrooms."
     },
-    "servers": [
-        {
-            "url": "http://localhost:4000",
-            "description": "Localhost server"
-        }
-    ],
-    "tags": [
-        {
-            "name": "Chat",
-            "description": "Everything about chatrooms."
-        },
-        {
-            "name": "User Management",
-            "description": "Operations about user"
-        }
-    ],
-    "security": [
-        {
-            "bearerAuth": []
-        }
-    ],
-    "paths": {
-        "/api/chatRooms": {
-            "get": {
-                "tags": [
-                    "Chat"
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Chat"
-                ]
-            }
-        },
-        "/api/chatRooms/{chatRoomId}": {
-            "get": {
-                "tags": [
-                    "Chat"
-                ],
-                "summary": "get a chat room by id.",
-                "responses": {
-                    "404": {
-                        "$ref": "#/components/responses/404NotFound"
-                    }
+    {
+      "name": "User Management",
+      "description": "Operations about user"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/chatRooms": {
+      "get": {
+        "tags": ["Chat"],
+        "summary": "Get all chat rooms.",
+        "responses": {
+          "200": {
+            "description": "Get all chat rooms.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatRoom"
+                  }
                 }
-            },
-            "put": {
-                "tags": [
-                    "Chat"
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Chat"
-                ]
+              }
             }
-        },
-        "/api/users/register": {
-            "post": {
-                "tags": [
-                    "User Management"
-                ],
-                "summary": "Create a new user.",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "username": {
-                                        "type": "string"
-                                    },
-                                    "displayName": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "nullable": true
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password"
-                                    }
-                                },
-                                "required": [
-                                    "username",
-                                    "displayName",
-                                    "password  "
-                                ]
-                            }
-                        }
-                    }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Chat"],
+        "summary": "Create a chat room.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": { "type": "string" }
                 },
-                "responses": {
-                    "201": {
-                        "description": "Message user register successfuly.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DefaultMessageResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Register failed request model invalid or user exists.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "oneOf": [
-                                        {
-                                            "$ref": "#/components/schemas/DefaultMessageResponse"
-                                        },
-                                        {
-                                            "$ref": "#/components/schemas/ErrorModelMessageResponse"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
+                "required": ["name"]
+              }
             }
-        },
-        "/api/users/login": {
-            "post": {
-                "tags": [
-                    "User Management"
-                ],
-                "summary": "Create a new user.",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "username": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password"
-                                    }
-                                },
-                                "required": [
-                                    "username",
-                                    "password  "
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Return login sucessfully message and jwt token.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "token": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Username or password is invalid, login failed,.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "oneOf": [
-                                        {
-                                            "$ref": "#/components/schemas/DefaultMessageResponse"
-                                        },
-                                        {
-                                            "$ref": "#/components/schemas/ErrorModelMessageResponse"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "User": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email"
-                    },
-                    "displayName": {
-                        "type": "string"
-                    }
-                }
-            },
-            "ChatRoom": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "users": {
-                        "type": "array",
-                        "items": {
-                            "oneOf": [
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            ]
-                        }
-                    }
-                }
-            },
-            "ValidationError": {
-                "type": "object",
-                "properties": {
-                    "param": {
-                        "type": "string"
-                    },
-                    "msg": {
-                        "type": "string"
-                    },
-                    "nestedErrors": {
-                        "type": "array",
-                        "nullable": true,
-                        "items": {
-                            "type": "object"
-                        }
-                    },
-                    "location": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "value": {
-                        "type": "string",
-                        "nullable": true
-                    }
-                }
-            },
-            "DefaultMessageResponse": {
-                "type": "object",
-                "properties": {
-                    "message": {
-                        "type": "string"
-                    }
-                }
-            },
-            "ErrorModelMessageResponse": {
-                "type": "object",
-                "properties": {
-                    "message": {
-                        "type": "string"
-                    },
-                    "errors": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ValidationError"
-                        }
-                    }
-                }
-            }
-        },
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
-            }
+          }
         },
         "responses": {
-            "401Unauthorized": {
-                "description": "User unauthenticated.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/DefaultMessageResponse"
-                        },
-                        "example": {
-                            "messsage": "Unauthorized."
-                        }
-                    }
+          "201": {
+            "description": "Chat room was created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatRoom"
                 }
-            },
-            "403Forbidden": {
-                "description": "The specified resource was access denied.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/DefaultMessageResponse"
-                        },
-                        "example": {
-                            "messsage": "NotFound."
-                        }
-                    }
-                }
-            },
-            "404NotFound": {
-                "description": "The specified resource was not found.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/DefaultMessageResponse"
-                        },
-                        "example": {
-                            "messsage": "NotFound."
-                        }
-                    }
-                }
+              }
             }
+          },
+          "400": {
+            "description": "Request model invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModelMessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
         }
+      }
+    },
+    "/api/chatRooms/{chatRoomId}": {
+      "get": {
+        "tags": ["Chat"],
+        "summary": "get a chat room by id.",
+        "parameters": [
+          {
+            "name": "chatRoomId",
+            "in": "path",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chat room is exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatRoom"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Chat"],
+        "summary": "Update a chat room by id.",
+        "parameters": [
+          {
+            "name": "chatRoomId",
+            "in": "path",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": { "type": "string" }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chat room was Updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatRoom"
+                }
+              }
+            }
+          },
+
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Chat"],
+        "summary": "Delete a chat room by id.",
+        "parameters": [
+          {
+            "name": "chatRoomId",
+            "in": "path",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chat room was deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatRoom"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          }
+        }
+      }
+    },
+    "/api/users/register": {
+      "post": {
+        "tags": ["User Management"],
+        "summary": "Create a new user.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "nullable": true
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "required": ["username", "displayName", "password  "]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message user register successfuly.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultMessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Register failed request model invalid or user exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/DefaultMessageResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorModelMessageResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": ["User Management"],
+        "summary": "Create a new user.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "required": ["username", "password  "]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return login sucessfully message and jwt token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Username or password is invalid, login failed,.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/DefaultMessageResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorModelMessageResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "displayName": {
+            "type": "string"
+          }
+        }
+      },
+      "ChatRoom": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/components/schemas/User"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "param": {
+            "type": "string"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "nestedErrors": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "object"
+            }
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DefaultMessageResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorModelMessageResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "401Unauthorized": {
+        "description": "User unauthenticated.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DefaultMessageResponse"
+            },
+            "example": {
+              "messsage": "Unauthorized."
+            }
+          }
+        }
+      },
+      "403Forbidden": {
+        "description": "The specified resource was access denied.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DefaultMessageResponse"
+            },
+            "example": {
+              "messsage": "NotFound."
+            }
+          }
+        }
+      },
+      "404NotFound": {
+        "description": "The specified resource was not found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DefaultMessageResponse"
+            },
+            "example": {
+              "messsage": "NotFound."
+            }
+          }
+        }
+      }
+    }
+  }
 }
