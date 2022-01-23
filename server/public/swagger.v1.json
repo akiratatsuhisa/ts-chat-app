@@ -103,7 +103,7 @@
     "/api/chatRooms/{chatRoomId}": {
       "get": {
         "tags": ["Chat"],
-        "summary": "get a chat room by id.",
+        "summary": "Get a chat room by id.",
         "parameters": [
           {
             "name": "chatRoomId",
@@ -449,7 +449,7 @@
               "$ref": "#/components/schemas/DefaultMessageResponse"
             },
             "example": {
-              "messsage": "NotFound."
+              "messsage": "AccessDenied."
             }
           }
         }

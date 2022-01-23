@@ -3,26 +3,30 @@ version: '3.9'
 services:
   mongodb:
     image: mongo:latest
-    restart: unless-stopped
+    restart: always
     env_file: ./.env
     ports:
       - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
     volumes:
-      - mongovolume:/data/db
+      - db:/data/db
+      - db:/data/configdb
     networks:
       - backend
   chat-app-api:
     depends_on:
       - mongodb
+    restart: always
     build: ./server
-    restart: unless-stopped
-    ports:
-      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     env_file: ./.env
     environment:
       - DATABASE_HOST=mongodb
       - DATABASE_NAME=$MONGODB_DATABASE_NAME
       - DATABASE_PORT=$MONGODB_DOCKER_PORT
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    volumes:
+      - be:/usr/local/chat-app-api/public
+   
     networks:
       - backend
       - frontend
@@ -31,13 +35,16 @@ services:
       - chat-app-api
     build: ./client
     env_file: ./.env
+    environment:
+      - REACT_APP_BASE_API_URL=$BASE_API_URL
     ports:
       - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
     networks:
       - frontend
 
 volumes:
-  mongovolume:
+  db:
+  be:
 
 networks:
   frontend:
