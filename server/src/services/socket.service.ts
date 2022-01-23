@@ -69,6 +69,7 @@ export const registerChatSocket = (
       content = content?.trim();
       if (
         !content ||
+        !chatRoomId ||
         !(await ChatRoom.hasUserInRoom(chatRoomId, socket.data.user.id))
       ) {
         return;
@@ -87,6 +88,56 @@ export const registerChatSocket = (
         content,
       });
     });
+
+    socket.on("evictMessage", async ({ chatMessageId }) => {
+      const chatMessage = await ChatMessage.findById(chatMessageId);
+
+      const chatRoomId = chatMessage?.chatRoomId?.toString() ?? "";
+
+      if (
+        !chatMessage ||
+        !(await ChatRoom.hasUserInRoom(chatRoomId, socket.data.user.id))
+      ) {
+        return;
+      }
+
+      await chatMessage.deleteOne();
+
+      socket.to(chatRoomId).emit("admitMessage", {
+        id: chatMessage.id,
+      });
+    });
+
+    socket.on(
+      "updateUsers",
+      async ({ chatRoomId, users = [], type = "add" }) => {
+        const chatRoom = await ChatRoom.findById(chatRoomId);
+        if (
+          !chatRoom ||
+          !(await ChatRoom.hasUserInRoom(chatRoomId, socket.data.user.id))
+        ) {
+          return;
+        }
+
+        let updateUsers: string[] = chatRoom.users.map((x) => x.toString());
+        switch (type) {
+          case "add": {
+            updateUsers = [...new Set([...updateUsers, ...users])];
+            break;
+          }
+          case "remove": {
+            updateUsers = updateUsers.filter((user) => !users.includes(user));
+            break;
+          }
+          default:
+            break;
+        }
+
+        await chatRoom.updateOne({ users: updateUsers });
+
+        socket.to(chatRoomId).emit("modifyUsers", { users: updateUsers });
+      }
+    );
   });
 
   return io;

@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Chat app Backend API",
-    "description": "",
+    "description": "A simple API.",
     "version": "1.0.0",
     "contact": {
       "name": "Đặng Minh Đạt",
@@ -152,7 +152,7 @@
         },
         "responses": {
           "200": {
-            "description": "Chat room was Updated.",
+            "description": "Chat room was updated.",
             "content": {
               "application/json": {
                 "schema": {
@@ -265,7 +265,7 @@
     "/api/users/login": {
       "post": {
         "tags": ["User Management"],
-        "summary": "Create a new user.",
+        "summary": "Create a new jwt token.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -425,7 +425,7 @@
     },
     "responses": {
       "401Unauthorized": {
-        "description": "User unauthenticated.",
+        "description": "User unauthorized.",
         "content": {
           "application/json": {
             "schema": {
