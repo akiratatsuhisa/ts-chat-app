@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
+    volumes:
+      - mongovolume:/data/db
+    networks:
+      - backend
+  chat-app-api:
+    depends_on:
+      - mongodb
+    build: ./server
+    restart: unless-stopped
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    env_file: ./.env
+    environment:
+      - DATABASE_HOST=mongodb
+      - DATABASE_NAME=$MONGODB_DATABASE_NAME
+      - DATABASE_PORT=$MONGODB_DOCKER_PORT
+    networks:
+      - backend
+      - frontend
+  chat-appp-ui:
+    depends_on:
+      - chat-app-api
+    build: ./client
+    env_file: ./.env
+    ports:
+      - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
+    networks:
+      - frontend
+
+volumes:
+  mongovolume:
+
+networks:
+  frontend:
+  backend:
