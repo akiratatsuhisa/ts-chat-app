@@ -7,11 +7,11 @@ import { CogIcon } from "@heroicons/react/solid";
 
 const SettingsComponent: FC = () => {
   return (
-    <div className="mx-3 relative inline-block">
-      <div className="bg-slate-300 dark:bg-slate-700 p-2 text-white rounded-full shadow-md">
+    <div className="group mx-3 relative inline-block">
+      <div className=" bg-slate-300 dark:bg-slate-700 p-2 text-white rounded-full shadow-md">
         <CogIcon className="h-6 w-6"></CogIcon>
       </div>
-      <div className="bg-slate-100 dark:bg-slate-500 absolute right-0 mt-1 py-3 w-60 rounded-lg shadow-md">
+      <div className="hidden group-hover:block bg-slate-100 dark:bg-slate-500 absolute right-0 py-3 w-60 rounded-lg shadow-md">
         <div>
           <div className=" hover:bg-slate-300 dark:hover:bg-slate-500 p-2">
             Items

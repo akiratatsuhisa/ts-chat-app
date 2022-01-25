@@ -16,7 +16,6 @@ export const authenticate = (
     return next();
   }
 
-  console.log("test");
   const token: string = authorization.split(" ")[1];
   const user = verifyJwtToken(token);
 

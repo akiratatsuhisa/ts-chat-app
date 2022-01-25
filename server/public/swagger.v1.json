@@ -39,6 +39,18 @@
       "get": {
         "tags": ["Chat"],
         "summary": "Get all chat rooms.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": { "type": "integer" }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Get all chat rooms.",
@@ -52,6 +64,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400RequestModelInvalid"
           },
           "401": {
             "$ref": "#/components/responses/401Unauthorized"
@@ -85,14 +100,7 @@
             }
           },
           "400": {
-            "description": "Request model invalid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorModelMessageResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/400RequestModelInvalid"
           },
           "401": {
             "$ref": "#/components/responses/401Unauthorized"
@@ -166,6 +174,9 @@
             }
           },
 
+          "400": {
+            "$ref": "#/components/responses/400RequestModelInvalid"
+          },
           "401": {
             "$ref": "#/components/responses/401Unauthorized"
           },
@@ -195,6 +206,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400RequestModelInvalid"
           },
           "401": {
             "$ref": "#/components/responses/401Unauthorized"
@@ -356,18 +370,13 @@
           "name": {
             "type": "string"
           },
-          "users": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "$ref": "#/components/schemas/User"
-                }
-              ]
-            }
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "datetime"
           }
         }
       },
@@ -428,6 +437,16 @@
       }
     },
     "responses": {
+      "400RequestModelInvalid": {
+        "description": "Request model is invalid.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorModelMessageResponse"
+            }
+          }
+        }
+      },
       "401Unauthorized": {
         "description": "User unauthorized.",
         "content": {

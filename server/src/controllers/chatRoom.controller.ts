@@ -1,5 +1,5 @@
 import { IRouter, Request, Response, Router } from "express";
-import { body, param, validationResult } from "express-validator";
+import { body, query, oneOf, param, validationResult } from "express-validator";
 import {
   ForbiddenResponse,
   IErrorModelMessageResponse,
@@ -9,10 +9,33 @@ import { ChatRoom } from "../models/ChatRoom.model";
 
 export const chatRoomsRouter: IRouter = Router();
 
-chatRoomsRouter.get("/", async (req: Request, res: Response) => {
-  const chatRooms = await ChatRoom.find({});
-  res.status(200).json(chatRooms);
-});
+const chatRoomListValidationChains = [
+  oneOf([query("page").isInt({ min: 0 }), query("page").isEmpty()]),
+  oneOf([query("size").isInt({ min: 10, max: 100 }), query("size").isEmpty()]),
+];
+
+chatRoomsRouter.get(
+  "/",
+  chatRoomListValidationChains,
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: "Request model is invalid.",
+        errors: errors.array(),
+      } as IErrorModelMessageResponse);
+    }
+
+    const page = parseInt(req.query?.page as string, 10) || 1;
+    const size = parseInt(req.query?.size as string, 10) || 10;
+
+    const chatRooms = await ChatRoom.find({})
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * size)
+      .limit(page * size);
+    res.status(200).json(chatRooms);
+  }
+);
 
 chatRoomsRouter.get(
   "/:id",
@@ -21,7 +44,7 @@ chatRoomsRouter.get(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        message: "Request is invalid.",
+        message: "Request model is invalid.",
         errors: errors.array(),
       } as IErrorModelMessageResponse);
     }
@@ -48,7 +71,7 @@ chatRoomsRouter.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        message: "Request is invalid.",
+        message: "Request model is invalid.",
         errors: errors.array(),
       } as IErrorModelMessageResponse);
     }
@@ -73,7 +96,7 @@ chatRoomsRouter.put(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        message: "Request is invalid.",
+        message: "Request model is invalid.",
         errors: errors.array(),
       } as IErrorModelMessageResponse);
     }
@@ -111,7 +134,7 @@ chatRoomsRouter.delete(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        message: "Request is invalid.",
+        message: "Request model is invalid.",
         errors: errors.array(),
       } as IErrorModelMessageResponse);
     }

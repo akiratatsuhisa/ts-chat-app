@@ -23,7 +23,7 @@ usersRouter.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        message: "Request is invalid.",
+        message: "Request model is invalid.",
         errors: errors.array(),
       } as IErrorModelMessageResponse);
     }
@@ -58,7 +58,7 @@ usersRouter.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        message: "Request is invalid.",
+        message: "Request model is invalid.",
         errors: errors.array(),
       } as IErrorModelMessageResponse);
     }

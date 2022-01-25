@@ -18,6 +18,7 @@ export const App: FC = () => {
         <Route index element={<HomePage />}></Route>
         <Route path="/about" element={<AboutPage />}></Route>
         <Route path="/chat" element={<ChatRoomsPage />}></Route>
+        <Route path="/chat/:id" element={<div></div>}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>
       </Route>

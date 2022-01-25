@@ -10,6 +10,9 @@ export interface IChatMessage {
   userId: Types.ObjectId;
 
   content: string;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IChatMessageDocument extends IChatMessage, Document {}
@@ -21,15 +24,18 @@ export interface IPopludateChatMessage {
   user: IUserDocument | null;
 }
 
-const schema = new Schema<IChatMessageDocument, IChatMessageModel>({
-  chatRoom_id: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    alias: "chatRoomId",
+const schema = new Schema<IChatMessageDocument, IChatMessageModel>(
+  {
+    chatRoom_id: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      alias: "chatRoomId",
+    },
+    user_id: { type: Schema.Types.ObjectId, required: true, alias: "userId" },
+    content: { type: String, required: true },
   },
-  user_id: { type: Schema.Types.ObjectId, required: true, alias: "userId" },
-  content: { type: String, required: true },
-});
+  { timestamps: true }
+);
 
 schema.virtual("chatRoom", {
   ref: "ChatRoom",
