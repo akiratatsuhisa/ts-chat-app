@@ -49,20 +49,26 @@ export const registerChatSocket = (
   });
 
   io.on("connection", (socket) => {
-    console.log(`Connected: ${socket.data.user.id}`);
+    console.log(
+      `user: ${socket.data.user.username} connected: ${socket.data.user.id}`
+    );
 
     socket.on("disconnect", () => {
-      console.log(`Disconnected: ${socket.data.user.id}`);
+      console.log(
+        `user: ${socket.data.user.username} disconnected: ${socket.data.user.id}`
+      );
     });
 
     socket.on("joinRoom", ({ chatRoomId }) => {
       socket.join(chatRoomId);
-      console.log(`user joined chatroom: ${chatRoomId}`);
+      console.log(
+        `user: ${socket.data.user.username} joined chatroom: ${chatRoomId}`
+      );
     });
 
     socket.on("leaveRoom", ({ chatRoomId }) => {
       socket.leave(chatRoomId);
-      console.log(`user left chatroom: ${chatRoomId}`);
+      `user: ${socket.data.user.username} left chatroom: ${chatRoomId}`;
     });
 
     socket.on("sendMessage", async ({ chatRoomId, content }) => {
@@ -96,6 +102,7 @@ export const registerChatSocket = (
 
       if (
         !chatMessage ||
+        chatMessage.userId != socket.data.user.id ||
         !(await ChatRoom.hasUserInRoom(chatRoomId, socket.data.user.id))
       ) {
         return;
@@ -134,7 +141,7 @@ export const registerChatSocket = (
         }
 
         await chatRoom.updateOne({ users: updateUsers });
-
+        console.log(`users: ${updateUsers.join(", ")} in room: ${chatRoom.id}`);
         socket.to(chatRoomId).emit("modifyUsers", { users: updateUsers });
       }
     );

@@ -1,4 +1,4 @@
-import { model, Model, Document, Schema, Types } from "mongoose";
+import { model, Model, Document, Schema, Types, Query } from "mongoose";
 import { IChatRoomDocument } from "./ChatRoom.model";
 import { IUserDocument } from "./User.model";
 
@@ -17,7 +17,9 @@ export interface IChatMessage {
 
 export interface IChatMessageDocument extends IChatMessage, Document {}
 
-export interface IChatMessageModel extends Model<IChatMessageDocument> {}
+export interface IChatMessageModel extends Model<IChatMessageDocument> {
+  findByRoomId: (roomId: string) => Query<any, IChatMessageDocument>;
+}
 
 export interface IPopludateChatMessage {
   chatRoom: IChatRoomDocument | null;
@@ -50,6 +52,14 @@ schema.virtual("user", {
   foreignField: "user_id",
   justOne: true,
 });
+
+schema.statics.findByRoomId = function (
+  roomId: string
+): Query<any, IChatMessageDocument> {
+  return this.find({
+    chatRoom_id: new Types.ObjectId(roomId),
+  });
+};
 
 export const ChatMessage = model<IChatMessageDocument, IChatMessageModel>(
   "ChatMessage",

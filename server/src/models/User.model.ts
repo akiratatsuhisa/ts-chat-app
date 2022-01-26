@@ -1,4 +1,4 @@
-import { model, Model, Document, Schema } from "mongoose";
+import { model, Model, Document, Schema, Query } from "mongoose";
 import { default as bcrypt } from "bcryptjs";
 
 export interface IUser {
@@ -14,7 +14,7 @@ export interface IUserDocument extends IUser, Document {
 }
 
 export interface IUserModel extends Model<IUserDocument> {
-  findByUsername: (username: string) => Promise<IUserDocument>;
+  findByUsername: (username: string) => Query<any, IUserDocument>;
 }
 
 const schema = new Schema<IUserDocument, IUserModel>({
@@ -24,17 +24,21 @@ const schema = new Schema<IUserDocument, IUserModel>({
   displayName: { type: String, required: true },
 });
 
-schema.methods.setPassword = async function (password: string) {
+schema.methods.setPassword = async function (password: string): Promise<void> {
   const hash = await bcrypt.hash(password, 10);
   this.password = hash;
 };
 
-schema.methods.checkPassword = async function (password: string) {
+schema.methods.checkPassword = async function (
+  password: string
+): Promise<boolean> {
   const result = await bcrypt.compare(password, this.password);
   return result;
 };
 
-schema.statics.findByUsername = function (username: string) {
+schema.statics.findByUsername = function (
+  username: string
+): Query<any, IUserDocument> {
   return this.findOne({ username });
 };
 

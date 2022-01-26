@@ -55,7 +55,7 @@ const swaggerOptions: SwaggerUiOptions = {
     console.log(`App listening at http://localhost:${PORT} 🚀`);
     console.log(`Api docs link http://localhost:${PORT}/api/docs 🛰`);
   });
-
+  
   const io = startSocketIo(server);
   registerChatSocket(io.of("/chat"));
 })().catch((error: Error) => console.error(error));

@@ -25,7 +25,10 @@ const schema = new Schema<IChatRoomDocument, IChatRoomModel>(
   { timestamps: true }
 );
 
-schema.statics.hasUserInRoom = async function (roomId: string, userId: string) {
+schema.statics.hasUserInRoom = async function (
+  roomId: string,
+  userId: string
+): Promise<boolean> {
   return !!(await this.findOne({
     _id: new Types.ObjectId(roomId),
     users: new Types.ObjectId(userId),

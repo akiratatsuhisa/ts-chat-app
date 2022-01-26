@@ -1,5 +1,6 @@
 import { IRouter, Request, Response, Router } from "express";
 import { body, query, oneOf, param, validationResult } from "express-validator";
+import { ChatMessage } from "../models/ChatMessage.model";
 import {
   ForbiddenResponse,
   IErrorModelMessageResponse,
@@ -151,5 +152,38 @@ chatRoomsRouter.delete(
       return res.status(404).json(NotFoundResponse);
     }
     res.status(200).json(chatRoom);
+  }
+);
+
+const chatRoomMessagesValidationChains = [
+  oneOf([query("page").isInt({ min: 0 }), query("page").isEmpty()]),
+  oneOf([query("size").isInt({ min: 10, max: 100 }), query("size").isEmpty()]),
+];
+
+chatRoomsRouter.get(
+  "/:id/messages",
+  chatRoomMessagesValidationChains,
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: "Request model is invalid.",
+        errors: errors.array(),
+      } as IErrorModelMessageResponse);
+    }
+
+    const page = parseInt(req.query?.page as string, 10) || 1;
+    const size = parseInt(req.query?.size as string, 10) || 10;
+
+    if (!(await ChatRoom.hasUserInRoom(req.params.id, req.user?.id))) {
+      return res.status(403).json(ForbiddenResponse);
+    }
+
+    const messages = await ChatMessage.findByRoomId(req.params.id)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * size)
+      .limit(page * size);
+
+    res.status(200).json(messages);
   }
 );
