@@ -219,6 +219,51 @@
         }
       }
     },
+    "/api/chatRooms/{chatRoomId}/messages": {
+      "get": {
+        "tags": ["Chat"],
+        "summary": "Get a list chat message by room id.",
+        "parameters": [
+          {
+            "name": "chatRoomId",
+            "in": "path",
+            "schema": { "type": "string" },
+            "required": true
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get chat messages by room id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatMessage"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400RequestModelInvalid"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          }
+        }
+      }
+    },
     "/api/users/register": {
       "post": {
         "tags": ["User Management"],
@@ -346,7 +391,7 @@
       "User": {
         "type": "object",
         "properties": {
-          "id": {
+          "_id": {
             "type": "string"
           },
           "username": {
@@ -364,10 +409,42 @@
       "ChatRoom": {
         "type": "object",
         "properties": {
-          "id": {
+          "_id": {
             "type": "string"
           },
           "name": {
+            "type": "string"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      },
+      "ChatMessage": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "chatRoom_id": {
+            "type": "string"
+          },
+
+          "user_id": {
+            "type": "string"
+          },
+          "content": {
             "type": "string"
           },
           "createdAt": {
