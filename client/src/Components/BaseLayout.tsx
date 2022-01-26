@@ -24,12 +24,23 @@ const SettingsComponent: FC = () => {
           </div>
           <hr className="bg-slate-300 my-2" />
           <div className="flex items-center p-2">
-            <span>Mode: {isDark ? "Dark" : "Light"}</span>
+            {isDark ? (
+              <>
+                <MoonIcon className="h-6 w-6 mr-2 text-cyan-500"></MoonIcon>
+                <span className="font-semibold">Dark</span>
+              </>
+            ) : (
+              <>
+                <SunIcon className="h-6 w-6 mr-2 text-yellow-500"></SunIcon>
+                <span className="font-semibold">Light</span>
+              </>
+            )}
             <div
               className="relative inline-block w-10 ml-auto align-middle select-none transition duration-200 ease-in"
               onClick={() => setThemeModeHandle(!isDark)}
             >
               <input
+                readOnly
                 checked={isDark}
                 type="checkbox"
                 className="bg-white border-slate-300 peer checked:border-green-400 checked:right-0 absolute block w-6 h-6 rounded-full border-4 outline-none appearance-none cursor-pointer"
@@ -49,8 +60,8 @@ export const BaseLayout: FC = () => {
   const onOpenSideBar = () => setIsOpen(true);
   const onCloseSideBar = () => setIsOpen(false);
   return (
-    <div className="text-black dark:text-white min-h-screen flex flex-col">
-      <div className="bg-white dark:bg-slate-900 flex items-center sticky top-0 z-40   shadow-md h-14 md:px-5 ">
+    <div className="text-black dark:text-white h-screen flex flex-col">
+      <div className="bg-white dark:bg-slate-900 shadow-md h-14 md:px-5  flex-none flex items-center sticky top-0 z-40">
         <button
           className="flex justify-center items-center w-14 h-14 md:hidden hover:bg-gray-200 dark:hover:bg-gray-700"
           onClick={onOpenSideBar}
@@ -65,7 +76,7 @@ export const BaseLayout: FC = () => {
           <TopNavBarListItem to="/chat">Chat Rooms</TopNavBarListItem>
         </TopNavBarList>
 
-        <div className="flex-1"></div>
+        <div className="flex-auto"></div>
 
         <TopNavBarList className="hidden sm:flex">
           <TopNavBarListItem to="/login">Login</TopNavBarListItem>
@@ -85,7 +96,7 @@ export const BaseLayout: FC = () => {
           isOpen ? "" : "-translate-x-full"
         }`}
       >
-        <div className="shadow-lg z-10 flex items-center">
+        <div className="shadow-lg h-14 flex-none flex items-center">
           <span className="px-2 text-xl font-bold">Chat App</span>
           <button
             className="ml-auto flex justify-center items-center hover:bg-gray-200 dark:hover:bg-gray-700 w-14 h-14 transform"
@@ -94,7 +105,7 @@ export const BaseLayout: FC = () => {
             <XIcon className="h-5 w-5"></XIcon>
           </button>
         </div>
-        <div className="bg-white dark:bg-slate-800 flex-1 overflow-y-auto">
+        <div className=" dark:bg-slate-800 flex-auto overflow-y-auto">
           <SideNavBarList>
             <SideNavBarListItem to="/" onClick={onCloseSideBar}>
               Home
@@ -116,10 +127,9 @@ export const BaseLayout: FC = () => {
             </SideNavBarListItem>
           </SideNavBarList>
         </div>
-        <div className="flex"></div>
       </div>
 
-      <div className=" bg-slate-100 dark:bg-slate-800 flex-1 relative">
+      <div className=" bg-slate-100 dark:bg-slate-800 flex-auto">
         <Outlet></Outlet>
       </div>
     </div>

@@ -10,7 +10,7 @@ interface AboutPageProps {}
 export const AboutPage: FC<AboutPageProps> = () => {
   return (
     <div
-      className="bg-cover bg-no-repeat bg-center"
+      className="h-full flex flex-col justify-center  items-center  bg-cover bg-no-repeat bg-center"
       style={{ backgroundImage: "url('https://picsum.photos/1920/1080')" }}
     >
       <div className="absolute inset-0 bg-slate-500/60 backdrop-blur-sm"></div>
@@ -31,7 +31,7 @@ export const AboutPage: FC<AboutPageProps> = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:w-2/3 mx-auto">
             <div className="text-center p-3">
               <ShieldCheckIcon className="w-24 text-blue-600 mx-auto"></ShieldCheckIcon>
-              <h4 className="text-xl font-semibold font-mono">Some things</h4>
+              <h4 className="text-xl font-semibold font-serif">Some things</h4>
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta
                 placeat blanditiis aperiam natus eum cum incidunt, consequatur
@@ -41,7 +41,7 @@ export const AboutPage: FC<AboutPageProps> = () => {
             </div>
             <div className="text-center p-3">
               <PrinterIcon className="w-24 text-purple-600 mx-auto"></PrinterIcon>
-              <h4 className="text-xl font-semibold font-mono">Some things</h4>
+              <h4 className="text-xl font-semibold font-serif">Some things</h4>
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta
                 placeat blanditiis aperiam natus eum cum incidunt, consequatur
@@ -51,7 +51,7 @@ export const AboutPage: FC<AboutPageProps> = () => {
             </div>
             <div className="text-center p-3">
               <ChartSquareBarIcon className="w-24 text-yellow-600 mx-auto"></ChartSquareBarIcon>
-              <h4 className="text-xl font-semibold font-mono">Some things</h4>
+              <h4 className="text-xl font-semibold font-serif">Some things</h4>
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta
                 placeat blanditiis aperiam natus eum cum incidunt, consequatur

@@ -3,7 +3,7 @@ import { FC } from "react";
 export const LoginPage: FC = () => {
   return (
     <div>
-      <div className="bg-white dark:bg-slate-900 p-6 md:p-12 rounded-3xl md:w-2/3 mx-3 md:mx-auto  my-3 md:my-12">
+      <div className="bg-white dark:bg-slate-900 p-6 md:p-12 rounded-3xl shadow-md md:w-2/3 mx-3 md:mx-auto  my-3 md:my-12">
         <h1 className="text-3xl font-semibold text-center mb-6">Login</h1>
         <div className="mb-3">
           <label className="block mb-3 font-light">Username</label>
