@@ -4,26 +4,39 @@ import { XIcon, MenuAlt1Icon } from "@heroicons/react/solid";
 import { TopNavBarList, TopNavBarListItem } from "./TopNavBarList";
 import { SideNavBarList, SideNavBarListItem } from "./SideNavBarList";
 import { CogIcon } from "@heroicons/react/solid";
+import { SunIcon, MoonIcon } from "@heroicons/react/outline";
+import { useTheme } from "../Contexts/ThemeContext";
 
 const SettingsComponent: FC = () => {
+  const { isDark, setThemeModeHandle } = useTheme();
   return (
     <div className="group mx-3 relative inline-block">
       <div className=" bg-slate-300 dark:bg-slate-700 p-2 text-white rounded-full shadow-md">
         <CogIcon className="h-6 w-6"></CogIcon>
       </div>
-      <div className="hidden group-hover:block bg-slate-100 dark:bg-slate-500 absolute right-0 py-3 w-60 rounded-lg shadow-md">
+      <div className="hidden group-hover:block bg-slate-100 dark:bg-slate-800 absolute right-0 py-3 w-60 rounded-lg shadow-md">
         <div>
-          <div className=" hover:bg-slate-300 dark:hover:bg-slate-500 p-2">
-            Items
+          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2">
+            Item
           </div>
-          <div className=" hover:bg-slate-300 dark:hover:bg-slate-500 p-2">
-            Items
+          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2">
+            Item
           </div>
           <hr className="bg-slate-300 my-2" />
-          <div className=" hover:bg-slate-300 dark:hover:bg-slate-500 p-2">
-            Items
+          <div className="flex items-center p-2">
+            <span>Mode: {isDark ? "Dark" : "Light"}</span>
+            <div
+              className="relative inline-block w-10 ml-auto align-middle select-none transition duration-200 ease-in"
+              onClick={() => setThemeModeHandle(!isDark)}
+            >
+              <input
+                checked={isDark}
+                type="checkbox"
+                className="bg-white border-slate-300 peer checked:border-green-400 checked:right-0 absolute block w-6 h-6 rounded-full border-4 outline-none appearance-none cursor-pointer"
+              />
+              <label className="bg-slate-300 peer-checked:bg-green-400 block overflow-hidden h-6 rounded-full  cursor-pointer "></label>
+            </div>
           </div>
-          <div className=" p-2">Items</div>
         </div>
       </div>
     </div>
@@ -81,7 +94,7 @@ export const BaseLayout: FC = () => {
             <XIcon className="h-5 w-5"></XIcon>
           </button>
         </div>
-        <div className="bg-white dark:bg-slate-800 flex-1 overflow-y-scroll">
+        <div className="bg-white dark:bg-slate-800 flex-1 overflow-y-auto">
           <SideNavBarList>
             <SideNavBarListItem to="/" onClick={onCloseSideBar}>
               Home
