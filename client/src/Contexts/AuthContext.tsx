@@ -19,6 +19,7 @@ export const useAuth = (): IAuthContext => {
 
 export const AuthProvider: FunctionComponent = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<object | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   const login = async (username: string, password: string): Promise<void> => {
     await new Promise((resolve) => resolve(true));

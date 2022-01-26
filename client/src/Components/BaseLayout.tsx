@@ -66,7 +66,7 @@ export const BaseLayout: FC = () => {
           className="flex justify-center items-center w-14 h-14 md:hidden hover:bg-gray-200 dark:hover:bg-gray-700"
           onClick={onOpenSideBar}
         >
-          <MenuAlt1Icon className="h-5 w-5"></MenuAlt1Icon>
+          <MenuAlt1Icon className="h-6 w-6 text-slate-400"></MenuAlt1Icon>
         </button>
         <span className="px-2 text-xl font-bold">Chat App</span>
 
@@ -102,7 +102,7 @@ export const BaseLayout: FC = () => {
             className="ml-auto flex justify-center items-center hover:bg-gray-200 dark:hover:bg-gray-700 w-14 h-14 transform"
             onClick={onCloseSideBar}
           >
-            <XIcon className="h-5 w-5"></XIcon>
+            <XIcon className="h-6 w-6 text-slate-400"></XIcon>
           </button>
         </div>
         <div className=" dark:bg-slate-800 flex-auto overflow-y-auto">

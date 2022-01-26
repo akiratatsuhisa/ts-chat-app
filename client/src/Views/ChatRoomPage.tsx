@@ -1,52 +1,59 @@
 import {
   ChatAlt2Icon,
   InformationCircleIcon,
-  XIcon,
+  ArrowLeftIcon,
 } from "@heroicons/react/solid";
 import { FC, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface ChatRoomPageProps {}
 
 export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const onOpenSideBar = () => setIsOpen(true);
   const onCloseSideBar = () => setIsOpen(false);
 
-  const renderList = [...new Array(30)].map((_, index) => (
-    <div
-      className={`m-2 flex ${
-        index % 2 === 0 ? "flex-row" : "flex-row-reverse"
-      }`}
-    >
-      <div className="w-40 md:w-80"></div>
+  const renderList = [...new Array(30)].map((_, index) => {
+    const random = Math.floor(Math.random() * (100 - 4)) + 4;
+    const odd = random % 2 === 0;
+    return (
       <div
-        className="px-3 py-2 bg-white dark:bg-slate-800 rounded-2xl"
-        key={index}
+        className={`p-2 w-full flex ${odd ? "flex-row" : "flex-row-reverse"}`}
       >
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque quod
-        vel sequi dolores! Repellendus ducimus libero ratione molestiae
-        reiciendis nemo voluptatem recusandae sint magnam necessitatibus! Earum
-        modi repudiandae ex accusantium!
+        <div className={`w-40 md:w-80 ${odd ? "mr-auto" : "ml-auto"}`}></div>
+        <div
+          className="px-3 py-2 bg-white dark:bg-slate-800 rounded-2xl"
+          key={index}
+        >
+          {` Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque
+          quod vel sequi dolores! Repellendus ducimus libero ratione molestiae
+          reiciendis nemo voluptatem recusandae sint magnam necessitatibus!
+          Earum modi repudiandae ex accusantium!`.slice(0, random)}
+        </div>
+        <div className="m-3">
+          <div
+            className={`h-8 w-8 rounded-full ${
+              odd ? "bg-green-500" : "bg-blue-500"
+            }  shadow-md`}
+          ></div>
+        </div>
       </div>
-      <div className="m-3">
-        <div className="h-8 w-8 rounded-full bg-green-600 shadow-md"></div>
-      </div>
-    </div>
-  ));
+    );
+  });
 
   return (
     <div className="h-full relative flex flex-row felx-nowrap">
       <div className="dark:bg-slate-700 flex-1 flex flex-col">
-        <div className="bg-white dark:bg-slate-800 shadow-lg flex items-center">
-          <span className="px-2 text-xl font-bold">Room - {id}</span>
+        <div className="bg-white dark:bg-slate-800 h-14 shadow-lg flex items-center">
+          <h1 className="px-2 text-xl font-bold">Room - long name</h1>
           <button
             className="ml-auto flex justify-center items-center hover:bg-gray-200 dark:hover:bg-gray-700 w-14 h-14 transform"
-            onClick={onOpenSideBar}
+            onClick={() => (isOpen ? onCloseSideBar() : onOpenSideBar())}
           >
-            <InformationCircleIcon className="h-5 w-5"></InformationCircleIcon>
+            <InformationCircleIcon className="h-6 w-6 text-slate-400"></InformationCircleIcon>
           </button>
         </div>
 
@@ -64,23 +71,52 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
         </div>
       </div>
       <div
-        className={`bg-white dark:bg-slate-800 md:w-80 shadow-lg absolute md:static ${
+        className={`bg-white dark:bg-slate-800 flex flex-col md:w-80 shadow-lg absolute md:static ${
           isOpen ? "block" : "hidden"
         }  inset-0`}
       >
-        <div className="shadow-lg flex items-center justify-between">
+        <div className="shadow-lg h-14 flex items-center justify-between">
           <button
-            className="flex justify-center items-center hover:bg-gray-200 dark:hover:bg-gray-700 w-14 h-14 transform"
+            className="flex md:hidden justify-center items-center hover:bg-gray-200 dark:hover:bg-gray-700 w-14 h-14 transform"
             onClick={onCloseSideBar}
           >
-            <ChatAlt2Icon className="h-5 w-5"></ChatAlt2Icon>
+            <ArrowLeftIcon className="h-6 w-6 text-slate-400"></ArrowLeftIcon>
           </button>
-          <span className="px-2 text-xl font-bold">Room - {id}</span>
+          <h1 className="px-2 text-xl font-bold">Room - long name</h1>
           <button
             className="flex justify-center items-center hover:bg-gray-200 dark:hover:bg-gray-700 w-14 h-14 transform"
-            onClick={onCloseSideBar}
+            onClick={() => navigate("/chat")}
           >
-            <XIcon className="h-5 w-5"></XIcon>
+            <ChatAlt2Icon className="h-6 w-6 text-slate-400"></ChatAlt2Icon>
+          </button>
+        </div>
+        <div className="p-3 flex-auto">
+          <h2 className="text-2xl font-semibold">Users</h2>
+          <div>
+            <div className="p-2 flex items-center">
+              <div className="bg-red-500 inline-block h-8 w-8 rounded-full"></div>
+              <div className="flex-auto mx-2">Username</div>
+            </div>
+            <div className="p-2 flex items-center">
+              <div className="bg-green-500 inline-block h-8 w-8 rounded-full"></div>
+              <div className="flex-auto mx-2">Username</div>
+            </div>
+            <div className="p-2 flex items-center">
+              <div className="bg-blue-500 inline-block h-8 w-8 rounded-full"></div>
+              <div className="flex-auto mx-2">Username</div>
+            </div>
+            <div className="p-2 flex items-center">
+              <div className="bg-yellow-500 inline-block h-8 w-8 rounded-full"></div>
+              <div className="flex-auto mx-2">Username</div>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 mt-auto">
+          <button className="bg-yellow-500 px-4 py-2 rounded-lg font-semibold">
+            Leave
+          </button>
+          <button className="bg-red-500  px-4 py-2 rounded-lg font-semibold">
+            Delete
           </button>
         </div>
       </div>
