@@ -25,7 +25,7 @@ services:
     ports:
       - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     volumes:
-      - be:/usr/local/chat-app-api/public/avatar
+      - be:/usr/local/chat-app-api/images
    
     networks:
       - backend

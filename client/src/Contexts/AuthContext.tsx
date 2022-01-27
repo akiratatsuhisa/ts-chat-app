@@ -5,11 +5,20 @@ import {
   useState,
   useEffect,
 } from "react";
-import { apiInstance } from "../Services/Api.service";
+import { apiInstance, apiUrl } from "../Services/Api.service";
 import { default as decode } from "jwt-decode";
 
+function getUserFromAccessToken(token: string): any {
+  if (token?.match(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/)) {
+    const user: any = decode(token);
+    user.avatarUrl = new URL(user.avatarUrl, apiUrl);
+    return user;
+  }
+  return null;
+}
+
 interface IAuthContext {
-  currentUser: object | null;
+  currentUser: any | null;
   login: (username: string, password: string) => Promise<string>;
   register: (
     username: string,
@@ -17,6 +26,7 @@ interface IAuthContext {
     displayName: string,
     email?: string
   ) => Promise<string>;
+  logout: () => string;
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
@@ -26,21 +36,15 @@ export const useAuth = (): IAuthContext => {
 };
 
 export const AuthProvider: FunctionComponent = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<any | null>(null);
+  const [currentUser, setCurrentUser] = useState<any | null>(
+    getUserFromAccessToken(localStorage.getItem("accessToken") || "")
+  );
   const [accessToken, setAccessToken] = useState<string | null>(
     localStorage.getItem("accessToken") || null
   );
 
   useEffect(() => {
-    if (
-      accessToken?.match(
-        /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/
-      )
-    ) {
-      setCurrentUser(decode(accessToken));
-    } else {
-      setCurrentUser(null);
-    }
+    setCurrentUser(getUserFromAccessToken(accessToken || ""));
   }, [accessToken]);
 
   const login = async (username: string, password: string): Promise<string> => {
@@ -77,7 +81,13 @@ export const AuthProvider: FunctionComponent = ({ children }) => {
     }
   };
 
-  const value: IAuthContext = { currentUser, login, register };
+  const logout = (): string => {
+    setAccessToken(null);
+    localStorage.removeItem("accessToken");
+    return "Logout successfully.";
+  };
+
+  const value: IAuthContext = { currentUser, login, register, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

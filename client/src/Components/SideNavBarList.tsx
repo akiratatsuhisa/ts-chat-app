@@ -9,9 +9,7 @@ export const SideNavBarList: FC<SideNavBarListProps> = ({
   children,
   className,
 }) => {
-  return (
-    <ul className={`flex flex-col p-3 ${className ?? ""}`}>{children}</ul>
-  );
+  return <ul className={`flex flex-col p-3 ${className ?? ""}`}>{children}</ul>;
 };
 
 interface SideNavBarListItemProps {
@@ -33,7 +31,9 @@ export const SideNavBarListItem: FC<SideNavBarListItemProps> = ({
       className={({ isActive }) =>
         `${
           isActive ? "border-green-600" : "border-slate-200"
-        } pl-3 border-l hover:border-green-600 font-light text-lg ${className ?? ""}`
+        } pl-3 border-l hover:border-green-600 font-light text-lg ${
+          className ?? ""
+        }`
       }
     >
       {children}

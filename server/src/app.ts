@@ -19,7 +19,7 @@ const swaggerOptions: SwaggerUiOptions = {
   swaggerOptions: {
     urls: [
       {
-        url: "/swagger.v1.json",
+        url: "/public/swagger.v1.json",
         name: "Version 1",
       },
     ],
@@ -32,9 +32,10 @@ const swaggerOptions: SwaggerUiOptions = {
   const app: Application = express();
 
   //app config
-  app.use(express.static("public"));
-
   app.use(cors());
+
+  app.use("/public", express.static("public"));
+  app.use("/images", express.static("images"));
   app.use(cookieParser());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -52,7 +53,7 @@ const swaggerOptions: SwaggerUiOptions = {
 
   // app run
   const server = app.listen(PORT, () => {
-    console.log(`App listening at http://localhost:${PORT} 🚀`);
+    console.log(`App listening at http://localhost:${PORT}/public 🚀`);
     console.log(`Api docs link http://localhost:${PORT}/api/docs 🛰`);
   });
 

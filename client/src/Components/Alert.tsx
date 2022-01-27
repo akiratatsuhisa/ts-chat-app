@@ -1,9 +1,5 @@
-import { FC } from "react";
-
-interface AlertProps {
-  title?: string;
-  color?: string;
-}
+import { XIcon } from "@heroicons/react/solid";
+import { FC, useEffect, useState } from "react";
 
 function getColorClasses(color: string) {
   switch (color) {
@@ -23,13 +19,47 @@ function getColorClasses(color: string) {
   }
 }
 
-export const Alert: FC<AlertProps> = ({ title, color = "green", children }) => {
+interface AlertProps {
+  title?: string;
+  color?: string;
+  show?: boolean;
+  closable?: boolean;
+  onClose?: () => void;
+}
+
+export const Alert: FC<AlertProps> = ({
+  title = "Alert",
+  color = "green",
+  show = true,
+  closable = false,
+  onClose,
+  children,
+}) => {
+  const [isShow, setIsShow] = useState<boolean>(show);
   let colorClasses = getColorClasses(color);
 
   return (
-    <div className={`${colorClasses} bg border-l-4 mb-2 p-2 rounded-lg`}>
-      {title && <div className="font-bold">{title}</div>}
-      {children}
+    <div
+      className={`${
+        isShow ? "" : "hidden"
+      } ${colorClasses} bg border-l-4 mb-2 p-2 rounded-lg`}
+    >
+      <div className="font-bold flex flex-row flex-nowrap">
+        <div className="flex-auto">{title} lorem</div>
+        {closable && (
+          <div>
+            <button
+              onClick={() => {
+                setIsShow(false);
+                onClose?.();
+              }}
+            >
+              <XIcon className="h-5 w-5"></XIcon>
+            </button>
+          </div>
+        )}
+      </div>
+      <div>{children}</div>
     </div>
   );
 };

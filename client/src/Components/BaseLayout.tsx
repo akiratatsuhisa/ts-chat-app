@@ -1,13 +1,16 @@
 import { FC, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { XIcon, MenuAlt1Icon } from "@heroicons/react/solid";
 import { TopNavBarList, TopNavBarListItem } from "./TopNavBarList";
 import { SideNavBarList, SideNavBarListItem } from "./SideNavBarList";
 import { CogIcon } from "@heroicons/react/solid";
 import { SunIcon, MoonIcon } from "@heroicons/react/outline";
 import { useTheme } from "../Contexts/ThemeContext";
+import { useAuth } from "../Contexts/AuthContext";
 
 const SettingsComponent: FC = () => {
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const { isDark, setDarkModeHandle } = useTheme();
   return (
     <div className="group mx-3 relative inline-block">
@@ -16,13 +19,6 @@ const SettingsComponent: FC = () => {
       </div>
       <div className="bg-slate-100 dark:bg-slate-800 hidden group-hover:block absolute right-0 py-3 w-60 rounded-lg shadow-md">
         <div>
-          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2 cursor-pointer">
-            <span className="font- font-bold">...</span>
-          </div>
-          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2  cursor-pointer">
-            <span className="font- font-bold">...</span>
-          </div>
-          <hr className="bg-slate-300 my-2" />
           <div className="flex items-center p-2">
             {isDark ? (
               <>
@@ -48,6 +44,24 @@ const SettingsComponent: FC = () => {
               <label className="bg-slate-300 peer-checked:bg-green-400 block overflow-hidden h-6 rounded-full  cursor-pointer "></label>
             </div>
           </div>
+          <hr className="bg-slate-300 my-2" />
+          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2 cursor-pointer">
+            <span className="font- font-bold">...</span>
+          </div>
+          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2  cursor-pointer">
+            <span className="font- font-bold">...</span>
+          </div>
+          {currentUser && (
+            <>
+              <hr className="bg-slate-300  my-2" />
+              <div
+                className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2  cursor-pointer"
+                onClick={() => navigate("/logout")}
+              >
+                Logout
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -55,6 +69,7 @@ const SettingsComponent: FC = () => {
 };
 
 export const BaseLayout: FC = () => {
+  const { currentUser } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const onOpenSideBar = () => setIsOpen(true);
@@ -79,8 +94,23 @@ export const BaseLayout: FC = () => {
         <div className="flex-auto"></div>
 
         <TopNavBarList className="hidden sm:flex">
-          <TopNavBarListItem to="/login">Login</TopNavBarListItem>
-          <TopNavBarListItem to="/register">Register</TopNavBarListItem>
+          {!currentUser ? (
+            <>
+              <TopNavBarListItem to="/login">Login</TopNavBarListItem>
+              <TopNavBarListItem to="/register">Register</TopNavBarListItem>
+            </>
+          ) : (
+            <>
+              <TopNavBarListItem to="/profile">
+                <img
+                  src={currentUser.avatarUrl}
+                  className="block mr-2 h-10 w-10 rounded-full shadow-lg object-cover object-center"
+                  alt="..."
+                ></img>
+                <span>{currentUser.displayName}</span>
+              </TopNavBarListItem>
+            </>
+          )}
         </TopNavBarList>
         <SettingsComponent />
       </div>
@@ -119,12 +149,32 @@ export const BaseLayout: FC = () => {
           </SideNavBarList>
           <hr className="my-3" />
           <SideNavBarList>
-            <SideNavBarListItem to="/login" onClick={onCloseSideBar}>
-              Login
-            </SideNavBarListItem>
-            <SideNavBarListItem to="/register" onClick={onCloseSideBar}>
-              Register
-            </SideNavBarListItem>
+            {!currentUser ? (
+              <>
+                <SideNavBarListItem to="/login" onClick={onCloseSideBar}>
+                  Login
+                </SideNavBarListItem>
+                <SideNavBarListItem to="/register" onClick={onCloseSideBar}>
+                  Register
+                </SideNavBarListItem>
+              </>
+            ) : (
+              <>
+                <SideNavBarListItem to="/profile" onClick={onCloseSideBar}>
+                  <div className="flex items-center justify-between">
+                    <span>{currentUser.displayName}</span>
+                    <img
+                      src={currentUser.avatarUrl}
+                      className="block mr-2 h-7 w-7 rounded-full shadow-lg object-cover object-center"
+                      alt="..."
+                    ></img>
+                  </div>
+                </SideNavBarListItem>
+                <SideNavBarListItem to="/logout" onClick={onCloseSideBar}>
+                  Logout
+                </SideNavBarListItem>
+              </>
+            )}
           </SideNavBarList>
         </div>
       </div>

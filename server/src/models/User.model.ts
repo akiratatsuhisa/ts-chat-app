@@ -94,16 +94,15 @@ schema.methods.generateAvatar = async function (): Promise<boolean> {
     __dirname,
     "..",
     "..",
-    "public",
-    "avatar",
-    `${this._id}.png`
+    "images",
+    `avatar.${this._id}.png`
   );
   try {
     const writeStream: WriteStream = createWriteStream(savePath);
     const stream = canvas.createPNGStream();
     stream.pipe(writeStream);
     await new Promise((resolve) => writeStream.on("finish", resolve));
-    this.avatarUrl = `/public/avatar/${this._id}.png`;
+    this.avatarUrl = `/images/avatar.${this._id}.png`;
     await this.save();
     return true;
   } catch (error) {
