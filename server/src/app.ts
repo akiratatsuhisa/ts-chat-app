@@ -59,4 +59,4 @@ const swaggerOptions: SwaggerUiOptions = {
 
   const io = startSocketIo(server);
   registerChatSocket(io.of("/chat"));
-})().catch((error: Error) => console.error(error));
+})();

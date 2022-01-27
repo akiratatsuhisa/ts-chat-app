@@ -22,9 +22,9 @@ interface IAuthContext {
   login: (username: string, password: string) => Promise<string>;
   register: (
     username: string,
-    password: string,
     displayName: string,
-    email?: string
+    email: string,
+    password: string
   ) => Promise<string>;
   logout: () => string;
 }
@@ -63,16 +63,16 @@ export const AuthProvider: FunctionComponent = ({ children }) => {
 
   const register = async (
     username: string,
-    password: string,
     displayName: string,
-    email?: string
+    email: string,
+    password: string
   ): Promise<string> => {
     try {
       const result = await apiInstance.post("/api/users/register", {
         username,
-        password,
         displayName,
         email,
+        password,
       });
       setAccessToken(result.data.token);
       return result.data.message;

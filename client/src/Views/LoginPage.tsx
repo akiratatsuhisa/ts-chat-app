@@ -1,9 +1,10 @@
 import { FC, useState } from "react";
 import { Alert } from "../Components/Alert";
-import { FormikErrors, useFormik } from "formik";
+import { useFormik } from "formik";
 import { useAuth } from "../Contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import { FieldInput } from "../Components/FieldInput";
 
 interface LoginFormValues {
   username: string;
@@ -62,39 +63,38 @@ export const LoginPage: FC = () => {
             {alert.message}
           </Alert>
         )}
+
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-3">
-            <label className="block mb-3 font-light">Username</label>
-            <input
-              name="username"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.username}
+            <FieldInput
               type="text"
-              className="dark:bg-slate-800 w-full p-2 mb-2 outline-none border-2 rounded-lg border-slate-300 dark:border-slate-700 focus:border-green-400 dark:focus:border-green-400"
-            ></input>
-            {formik.touched.username && formik.errors.username && (
-              <div className="text-red-500 font-medium">
-                {formik.errors.username}
-              </div>
-            )}
-          </div>
-          <div className="mb-3">
-            <label className="block mb-3 font-light">Password</label>
-            <input
-              name="password"
+              label="Username"
+              name="username"
+              value={formik.values.username}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.password}
-              type="password"
-              className="dark:bg-slate-800 w-full p-2 mb-2 outline-none border-2 rounded-lg border-slate-300 dark:border-slate-700 focus:border-green-400 dark:focus:border-green-400"
-            ></input>
-            {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 font-medium">
-                {formik.errors.password}
-              </div>
-            )}
+              errorMessage={{
+                show: !!(formik.touched.username && formik.errors.username),
+                value: formik.errors.username,
+              }}
+            />
           </div>
+
+          <div className="mb-3">
+            <FieldInput
+              type="password"
+              label="Password"
+              name="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              errorMessage={{
+                show: !!(formik.touched.password && formik.errors.password),
+                value: formik.errors.password,
+              }}
+            />
+          </div>
+
           <button
             type="submit"
             className="w-full mt-6 p-3 text-center bg-green-500 rounded-lg text-white"
