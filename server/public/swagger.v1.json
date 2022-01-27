@@ -264,6 +264,82 @@
         }
       }
     },
+    "/api/users": {
+      "get": {
+        "tags": ["User Management"],
+        "summary": "Get all users.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all users or get by search (displayName).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "400": {
+            "$ref": "#/components/responses/400RequestModelInvalid"
+          }
+        }
+      }
+    },
+    "/api/users/{userId}": {
+      "get": {
+        "tags": ["User Management"],
+        "summary": "Get a user by id.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "schema": { "type": "string" },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          }
+        }
+      }
+    },
     "/api/users/register": {
       "post": {
         "tags": ["User Management"],
@@ -402,6 +478,9 @@
             "format": "email"
           },
           "displayName": {
+            "type": "string"
+          },
+          "avatarUrl": {
             "type": "string"
           }
         }

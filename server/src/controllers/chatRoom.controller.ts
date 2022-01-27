@@ -31,6 +31,7 @@ chatRoomsRouter.get(
     const size = parseInt(req.query?.size as string, 10) || 10;
 
     const chatRooms = await ChatRoom.find({})
+      .populate("users")
       .sort({ createdAt: -1 })
       .skip((page - 1) * size)
       .limit(page * size);
@@ -54,7 +55,7 @@ chatRoomsRouter.get(
       return res.status(403).json(ForbiddenResponse);
     }
 
-    const chatRoom = await ChatRoom.findById(req.params.id);
+    const chatRoom = await ChatRoom.findById(req.params.id).populate("users");
     if (!chatRoom) {
       return res.status(404).json(NotFoundResponse);
     }

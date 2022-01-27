@@ -1,4 +1,3 @@
-import { model } from "mongoose";
 import { verify, sign, JwtPayload } from "jsonwebtoken";
 import { IUserDocument } from "../models/User.model";
 
@@ -22,11 +21,15 @@ export const verifyJwtToken = (token: string): JwtPayload | null => {
 };
 
 export const generateJwtToken = (user: IUserDocument): string => {
-  const { id, username, email, displayName } = user;
-  return sign({ id, username, email, displayName }, PRIVATE_KEY as string, {
-    subject: id,
-    issuer: ISSUER,
-    audience: AUDIENCE,
-    expiresIn: JWT_TOKEN_EXPIRES,
-  });
+  const { id, username, email, displayName, avatarUrl } = user;
+  return sign(
+    { id, username, email, displayName, avatarUrl },
+    PRIVATE_KEY as string,
+    {
+      subject: id,
+      issuer: ISSUER,
+      audience: AUDIENCE,
+      expiresIn: JWT_TOKEN_EXPIRES,
+    }
+  );
 };
