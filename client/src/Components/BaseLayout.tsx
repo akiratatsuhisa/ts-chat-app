@@ -8,19 +8,19 @@ import { SunIcon, MoonIcon } from "@heroicons/react/outline";
 import { useTheme } from "../Contexts/ThemeContext";
 
 const SettingsComponent: FC = () => {
-  const { isDark, setThemeModeHandle } = useTheme();
+  const { isDark, setDarkModeHandle } = useTheme();
   return (
     <div className="group mx-3 relative inline-block">
-      <div className=" bg-slate-300 dark:bg-slate-700 p-2 text-white rounded-full shadow-md">
+      <div className=" bg-slate-300 dark:bg-slate-700 text-white p-2  rounded-full shadow-md cursor-pointer">
         <CogIcon className="h-6 w-6"></CogIcon>
       </div>
-      <div className="hidden group-hover:block bg-slate-100 dark:bg-slate-800 absolute right-0 py-3 w-60 rounded-lg shadow-md">
+      <div className="bg-slate-100 dark:bg-slate-800 hidden group-hover:block absolute right-0 py-3 w-60 rounded-lg shadow-md">
         <div>
-          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2">
-            Item
+          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2 cursor-pointer">
+            <span className="font- font-bold">...</span>
           </div>
-          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2">
-            Item
+          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2  cursor-pointer">
+            <span className="font- font-bold">...</span>
           </div>
           <hr className="bg-slate-300 my-2" />
           <div className="flex items-center p-2">
@@ -37,7 +37,7 @@ const SettingsComponent: FC = () => {
             )}
             <div
               className="relative inline-block w-10 ml-auto align-middle select-none transition duration-200 ease-in"
-              onClick={() => setThemeModeHandle(!isDark)}
+              onClick={() => setDarkModeHandle(!isDark)}
             >
               <input
                 readOnly

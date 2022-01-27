@@ -2,7 +2,7 @@ import { useContext, createContext, FC, useState, useEffect } from "react";
 
 export interface IThemeContext {
   isDark: boolean;
-  setThemeModeHandle: (isDark: boolean) => void;
+  setDarkModeHandle: (value: boolean) => void;
 }
 
 const ThemeContext = createContext<IThemeContext>({} as IThemeContext);
@@ -18,24 +18,19 @@ export const ThemeProvider: FC = ({ children }) => {
 
   useEffect(() => {
     if (isDark) {
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  const setThemeModeHandle = (isDark: boolean): void => {
-    setIsdark(isDark);
-    if (isDark) {
       localStorage.setItem("isDark", "true");
+      document.documentElement.classList.add("dark");
     } else {
+      document.documentElement.classList.remove("dark");
       localStorage.removeItem("isDark");
     }
+  }, [isDark]);
 
-    document.documentElement.classList[isDark ? "add" : "remove"]("dark");
-  };
+  const setDarkModeHandle = (value: boolean) => setIsdark(value);
 
   const value: IThemeContext = {
     isDark,
-    setThemeModeHandle,
+    setDarkModeHandle,
   };
   return (
     <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>

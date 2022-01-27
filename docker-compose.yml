@@ -25,7 +25,7 @@ services:
     ports:
       - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     volumes:
-      - be:/usr/local/chat-app-api/public
+      - be:/usr/local/chat-app-api/public/avatar
    
     networks:
       - backend
@@ -33,10 +33,10 @@ services:
   chat-appp-ui:
     depends_on:
       - chat-app-api
-    build: ./client
-    env_file: ./.env
-    environment:
-      - REACT_APP_BASE_API_URL=$BASE_API_URL
+    build:
+      context: ./client
+      args:
+        - REACT_APP_BASE_API_URL=$BASE_API_URL
     ports:
       - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
     networks:

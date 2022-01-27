@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Route, Routes } from "react-router-dom";
 import { BaseLayout } from "./Components/BaseLayout";
 import { AboutPage } from "./Views/AboutPage";
@@ -9,7 +9,6 @@ import { LoginPage } from "./Views/LoginPage";
 import { RegisterPage } from "./Views/RegisterPage";
 
 export const App: FC = () => {
-
   return (
     <Routes>
       <Route path="/" element={<BaseLayout />}>

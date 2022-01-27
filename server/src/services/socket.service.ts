@@ -140,9 +140,11 @@ export const registerChatSocket = (
             break;
         }
 
-        await chatRoom.updateOne({ users: updateUsers });
+        const result = await chatRoom
+          .updateOne({ users: updateUsers }, { new: true })
+          .populate("users");
         console.log(`users: ${updateUsers.join(", ")} in room: ${chatRoom.id}`);
-        socket.to(chatRoomId).emit("modifyUsers", { users: updateUsers });
+        socket.to(chatRoomId).emit("modifyUsers", { users: result.users });
       }
     );
   });
