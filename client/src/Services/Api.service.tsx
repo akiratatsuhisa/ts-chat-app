@@ -1,6 +1,7 @@
 import { default as axios, AxiosRequestConfig, AxiosInstance } from "axios";
 
 export interface IUser {
+  _id: string;
   username: string;
   displayName: string;
   avatarUrl: string;
@@ -49,3 +50,12 @@ const config: AxiosRequestConfig = {
 };
 
 export const apiInstance: AxiosInstance = axios.create(config);
+
+apiInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+
+  config.headers = {
+    ...(!token ? {} : { Authorization: `Bearer ${token}` }),
+  };
+  return config;
+});

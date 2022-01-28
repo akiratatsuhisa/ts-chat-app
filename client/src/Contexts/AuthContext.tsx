@@ -10,6 +10,7 @@ import { default as decode } from "jwt-decode";
 import { io, Socket } from "socket.io-client";
 
 interface IAuthUser {
+  id: string;
   username: string;
   displayName: string;
   avatarUrl: string;
@@ -86,6 +87,7 @@ export const AuthProvider: FunctionComponent = ({ children }) => {
     } else {
       setupSocket();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
   const login = async (username: string, password: string): Promise<string> => {
