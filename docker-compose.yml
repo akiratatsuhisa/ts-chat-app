@@ -19,6 +19,7 @@ services:
     build: ./server
     env_file: ./.env
     environment:
+      - CLIENT_UI_URL=$CLIENT_UI_URL
       - DATABASE_HOST=mongodb
       - DATABASE_NAME=$MONGODB_DATABASE_NAME
       - DATABASE_PORT=$MONGODB_DOCKER_PORT
@@ -36,7 +37,7 @@ services:
     build:
       context: ./client
       args:
-        - REACT_APP_BASE_API_URL=$BASE_API_URL
+        - REACT_APP_SERVER_API_URL=$SERVER_API_URL
     ports:
       - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
     networks:

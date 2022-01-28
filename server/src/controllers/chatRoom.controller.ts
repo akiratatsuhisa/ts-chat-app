@@ -64,7 +64,9 @@ chatRoomsRouter.get(
   }
 );
 
-const chatRoomCreateValidationChains = [body("name").notEmpty()];
+const chatRoomCreateValidationChains = [
+  body("name").isLength({ min: 3, max: 256 }),
+];
 
 chatRoomsRouter.post(
   "/",
@@ -88,7 +90,7 @@ chatRoomsRouter.post(
 
 const chatRoomUpdateValidationChains = [
   param("id").notEmpty(),
-  body("name").notEmpty(),
+  body("name").isLength({ min: 3, max: 256 }),
 ];
 
 chatRoomsRouter.put(

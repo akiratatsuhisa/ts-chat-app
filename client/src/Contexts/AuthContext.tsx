@@ -5,8 +5,9 @@ import {
   useState,
   useEffect,
 } from "react";
-import { apiInstance, apiUrl } from "../Services/Api.service";
+import { apiInstance, apiUrl, wsUrl } from "../Services/Api.service";
 import { default as decode } from "jwt-decode";
+import { io, Socket } from "socket.io-client";
 
 interface IAuthUser {
   username: string;
@@ -50,14 +51,46 @@ export const AuthProvider: FunctionComponent = ({ children }) => {
   const [accessToken, setAccessToken] = useState<string | null>(
     localStorage.getItem("accessToken") || null
   );
+  const [socket, setSocket] = useState<Socket | null>();
+
+  const setupSocket = (): void => {
+    if (!accessToken) return;
+    const url = new URL("/chat", wsUrl).toString();
+    const socket = io(url, {
+      withCredentials: true,
+      extraHeaders: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    socket.on("connect_error", (err) => {
+      console.log(`connect_error due to ${err.message}`);
+    });
+
+    socket.on("connect", () => {
+      setSocket(socket);
+      console.log("connected");
+    });
+
+    socket.on("disconnect", () => {
+      setSocket(null);
+      console.log("disconnected");
+    });
+  };
 
   useEffect(() => {
     setCurrentUser(getUserFromAccessToken(accessToken || ""));
+
+    if (!accessToken) {
+      socket?.disconnect();
+    } else {
+      setupSocket();
+    }
   }, [accessToken]);
 
   const login = async (username: string, password: string): Promise<string> => {
     try {
-      const result = await apiInstance.post("/api/users/login", {
+      const result = await apiInstance.post("/users/login", {
         username,
         password,
       });
@@ -76,7 +109,7 @@ export const AuthProvider: FunctionComponent = ({ children }) => {
     password: string
   ): Promise<string> => {
     try {
-      const result = await apiInstance.post("/api/users/register", {
+      const result = await apiInstance.post("/users/register", {
         username,
         displayName,
         email,

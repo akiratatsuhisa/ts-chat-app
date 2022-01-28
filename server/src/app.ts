@@ -13,6 +13,7 @@ import { usersRouter } from "./controllers/users.controller";
 import { chatRoomsRouter } from "./controllers/chatRoom.controller";
 
 const PORT: number = parseInt(process.env.PORT as string, 10);
+const CLIENT_UI_URL = process.env.CLIENT_UI_URL as string;
 
 const swaggerOptions: SwaggerUiOptions = {
   explorer: true,
@@ -57,6 +58,14 @@ const swaggerOptions: SwaggerUiOptions = {
     console.log(`Api docs link http://localhost:${PORT}/api/docs 🛰`);
   });
 
-  const io = startSocketIo(server);
+  const io = startSocketIo(server, {
+    allowEIO3: true,
+    cors: {
+      origin: [CLIENT_UI_URL],
+      methods: ["GET", "POST"],
+      allowedHeaders: ["Authorization"],
+      credentials: true,
+    },
+  });
   registerChatSocket(io.of("/chat"));
 })();

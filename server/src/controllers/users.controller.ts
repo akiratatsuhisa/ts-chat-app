@@ -68,9 +68,9 @@ usersRouter.get(
 );
 
 const registerValidationChains = [
-  body("username").isLength({ min: 3, max: 32 }),
+  body("username").trim().isLength({ min: 3, max: 32 }),
+  body("displayName").trim().isLength({ min: 3, max: 32 }),
   oneOf([body("email").isEmpty(), body("email").isEmail()]),
-  body("displayName").isLength({ min: 3, max: 32 }),
   body("password").isLength({ min: 3, max: 32 }),
 ];
 

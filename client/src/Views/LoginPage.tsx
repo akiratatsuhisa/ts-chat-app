@@ -26,8 +26,8 @@ export const LoginPage: FC = () => {
       password: "",
     },
     validationSchema: Yup.object({
-      username: Yup.string().required("Required"),
-      password: Yup.string().required("Required"),
+      username: Yup.string().required(),
+      password: Yup.string().required(),
     }),
     async onSubmit(values: LoginFormValues) {
       try {

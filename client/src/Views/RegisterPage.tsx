@@ -30,10 +30,10 @@ export const RegisterPage: FC = () => {
       password: "",
     },
     validationSchema: Yup.object({
-      username: Yup.string().required("Required"),
-      displayName: Yup.string().required("Required"),
-      email: Yup.string().email("Not valid email format"),
-      password: Yup.string().required("Required"),
+      username: Yup.string().required().trim().min(3).max(32),
+      displayName: Yup.string().required().trim().min(3).max(32),
+      email: Yup.string().email(),
+      password: Yup.string().required().min(3).max(32),
     }),
     async onSubmit(values: RegisterFormValues) {
       try {
