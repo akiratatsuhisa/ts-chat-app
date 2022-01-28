@@ -59,7 +59,11 @@ export const registerChatSocket = (
       );
     });
 
-    socket.on("joinRoom", ({ chatRoomId }) => {
+    socket.on("joinRoom", async ({ chatRoomId }) => {
+      if (!(await ChatRoom.hasUserInRoom(chatRoomId, socket.data.user.id))) {
+        return;
+      }
+
       socket.join(chatRoomId);
       console.log(
         `user: ${socket.data.user.username} joined chatroom: ${chatRoomId}`
@@ -90,6 +94,7 @@ export const registerChatSocket = (
 
       socket.to(chatRoomId).emit("receiveMessage", {
         id: chatMessage.id,
+        chatRoomId,
         userId: socket.data.user.id,
         content,
       });
@@ -112,6 +117,7 @@ export const registerChatSocket = (
 
       socket.to(chatRoomId).emit("admitMessage", {
         id: chatMessage.id,
+        chatRoomId: chatMessage.chatRoomId,
       });
     });
 
@@ -144,7 +150,9 @@ export const registerChatSocket = (
           .updateOne({ users: updateUsers }, { new: true })
           .populate("users");
         console.log(`users: ${updateUsers.join(", ")} in room: ${chatRoom.id}`);
-        socket.to(chatRoomId).emit("modifyUsers", { users: result.users });
+        socket
+          .to(chatRoomId)
+          .emit("modifyUsers", { chatRoomId, users: result.users });
       }
     );
   });

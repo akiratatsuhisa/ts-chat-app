@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { XIcon, MenuAlt1Icon } from "@heroicons/react/solid";
+import { XIcon, MenuAlt1Icon, LogoutIcon } from "@heroicons/react/solid";
 import { TopNavBarList, TopNavBarListItem } from "./TopNavBarList";
 import { SideNavBarList, SideNavBarListItem } from "./SideNavBarList";
 import { CogIcon } from "@heroicons/react/solid";
@@ -18,51 +18,54 @@ const SettingsComponent: FC = () => {
         <CogIcon className="h-6 w-6"></CogIcon>
       </div>
       <div className="bg-slate-100 dark:bg-slate-800 hidden group-hover:block absolute right-0 py-3 w-60 rounded-lg shadow-md">
-        <div>
-          <div className="flex items-center p-2">
-            {isDark ? (
-              <>
-                <MoonIcon className="h-6 w-6 mr-2 text-cyan-500"></MoonIcon>
-                <span className="font-semibold">Dark</span>
-              </>
-            ) : (
-              <>
-                <SunIcon className="h-6 w-6 mr-2 text-yellow-500"></SunIcon>
-                <span className="font-semibold">Light</span>
-              </>
-            )}
-            <div
-              className="relative inline-block w-10 ml-auto align-middle select-none transition duration-200 ease-in"
-              onClick={() => setDarkModeHandle(!isDark)}
-            >
-              <input
-                readOnly
-                checked={isDark}
-                type="checkbox"
-                className="bg-white border-slate-300 peer checked:border-green-400 checked:right-0 absolute block w-6 h-6 rounded-full border-4 outline-none appearance-none cursor-pointer"
-              />
-              <label className="bg-slate-300 peer-checked:bg-green-400 block overflow-hidden h-6 rounded-full  cursor-pointer "></label>
-            </div>
-          </div>
-          <hr className="bg-slate-300 my-2" />
-          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2 cursor-pointer">
-            <span className="font- font-bold">...</span>
-          </div>
-          <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2  cursor-pointer">
-            <span className="font- font-bold">...</span>
-          </div>
-          {currentUser && (
+        <div className="flex items-center p-2">
+          {isDark ? (
             <>
-              <hr className="bg-slate-300  my-2" />
-              <div
-                className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2  cursor-pointer"
-                onClick={() => navigate("/logout")}
-              >
-                Logout
-              </div>
+              <MoonIcon className="h-6 w-6 text-cyan-500" />
+              <span className="ml-2 font-semibold">Dark</span>
+            </>
+          ) : (
+            <>
+              <SunIcon className="h-6 w-6 text-yellow-500" />
+              <span className="ml-2 font-semibold">Light</span>
             </>
           )}
+          <div
+            className="relative inline-block w-10 ml-auto select-none"
+            onClick={() => setDarkModeHandle(!isDark)}
+          >
+            <input
+              readOnly
+              checked={isDark}
+              type="checkbox"
+              className="bg-white border-slate-300 peer checked:border-green-400 checked:right-0 absolute block w-6 h-6 rounded-full border-4 outline-none appearance-none cursor-pointer"
+            />
+            <label className="bg-slate-300 peer-checked:bg-green-400 block overflow-hidden h-6 rounded-full  cursor-pointer "></label>
+          </div>
         </div>
+        <hr className="bg-slate-300 my-2" />
+        <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2 cursor-pointer">
+          <span className="font- font-bold">...</span>
+        </div>
+        <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2  cursor-pointer">
+          <span className="font- font-bold">...</span>
+        </div>
+        {currentUser && (
+          <>
+            <hr className="bg-slate-300  my-2" />
+            <div
+              className=" hover:bg-slate-300 dark:hover:bg-slate-900 cursor-pointer"
+              onClick={() => navigate("/logout")}
+            >
+              <div className=" flex items-center p-2">
+                <div className=" bg-slate-400 dark:bg-slate-700 text-white p-2 rounded-full">
+                  <LogoutIcon className="h-4 w-4" />
+                </div>
+                <span className="ml-auto font-semibold">Logout</span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -169,9 +172,6 @@ export const BaseLayout: FC = () => {
                       alt="..."
                     ></img>
                   </div>
-                </SideNavBarListItem>
-                <SideNavBarListItem to="/logout" onClick={onCloseSideBar}>
-                  Logout
                 </SideNavBarListItem>
               </>
             )}

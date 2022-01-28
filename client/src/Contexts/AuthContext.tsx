@@ -8,7 +8,15 @@ import {
 import { apiInstance, apiUrl } from "../Services/Api.service";
 import { default as decode } from "jwt-decode";
 
-function getUserFromAccessToken(token: string): any {
+interface IAuthUser {
+  username: string;
+  displayName: string;
+  avatarUrl: string;
+  email?: string;
+  [key: string]: any;
+}
+
+function getUserFromAccessToken(token: string): IAuthUser | null {
   if (token?.match(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/)) {
     const user: any = decode(token);
     user.avatarUrl = new URL(user.avatarUrl, apiUrl);
@@ -18,7 +26,7 @@ function getUserFromAccessToken(token: string): any {
 }
 
 interface IAuthContext {
-  currentUser: any | null;
+  currentUser: IAuthUser | null;
   login: (username: string, password: string) => Promise<string>;
   register: (
     username: string,
@@ -36,7 +44,7 @@ export const useAuth = (): IAuthContext => {
 };
 
 export const AuthProvider: FunctionComponent = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<any | null>(
+  const [currentUser, setCurrentUser] = useState<IAuthUser | null>(
     getUserFromAccessToken(localStorage.getItem("accessToken") || "")
   );
   const [accessToken, setAccessToken] = useState<string | null>(

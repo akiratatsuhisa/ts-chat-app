@@ -25,7 +25,7 @@ export const ChatRoomsPage: FC<ChatRoomsPageProps> = () => {
       </div>
       <div>
         <Link
-          className="border-teal-500 hover:bg-teal-500 inline-block  border-2 px-4 py-2 rounded-2xl"
+          className="border-teal-500 hover:bg-teal-500 inline-block  border-2 px-4 py-1 rounded-full"
           to={`/chat/${index + 1}`}
         >
           Join

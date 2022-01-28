@@ -45,7 +45,7 @@ export const Alert: FC<AlertProps> = ({
       } ${colorClasses} bg border-l-4 mb-2 p-2 rounded-lg`}
     >
       <div className="font-bold flex flex-row flex-nowrap">
-        <div className="flex-auto">{title} lorem</div>
+        <div className="flex-auto">{title}</div>
         {closable && (
           <div>
             <button

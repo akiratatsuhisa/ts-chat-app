@@ -18,25 +18,27 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
 
   const renderList = [...new Array(30)].map((_, index) => {
     const random = Math.floor(Math.random() * (100 - 4)) + 4;
-    const odd = random % 2 === 0;
+    const mine = random % 2 === 0;
     return (
       <div
-        className={`p-2 w-full flex ${odd ? "flex-row" : "flex-row-reverse"}`}
+        className={`p-2 w-full flex ${mine ? "flex-row" : "flex-row-reverse"}`}
       >
-        <div className={`w-40 md:w-80 ${odd ? "mr-auto" : "ml-auto"}`}></div>
+        <div className={`w-40 md:w-80 ${mine ? "mr-auto" : "ml-auto"}`}></div>
         <div
           className="px-3 py-2 bg-white dark:bg-slate-800 rounded-2xl"
           key={index}
         >
-          {` Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque
+          <span>
+            {` Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque
           quod vel sequi dolores! Repellendus ducimus libero ratione molestiae
           reiciendis nemo voluptatem recusandae sint magnam necessitatibus!
           Earum modi repudiandae ex accusantium!`.slice(0, random)}
+          </span>
         </div>
-        <div className="m-3">
+        <div className="m-2">
           <div
-            className={`h-8 w-8 rounded-full ${
-              odd ? "bg-green-500" : "bg-blue-500"
+            className={`h-6 w-6 rounded-full ${
+              mine ? "bg-green-500" : "bg-blue-500"
             }  shadow-md`}
           ></div>
         </div>
@@ -47,7 +49,7 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
   return (
     <div className="h-full relative flex flex-row felx-nowrap">
       <div className="dark:bg-slate-700 flex-1 flex flex-col">
-        <div className="bg-white dark:bg-slate-800 h-14 shadow-lg flex items-center">
+        <div className="bg-white dark:bg-slate-800 h-14 shadow-lg flex items-center z-10">
           <h1 className="px-2 text-xl font-bold">Room - long name</h1>
           <button
             className="ml-auto flex justify-center items-center hover:bg-gray-200 dark:hover:bg-gray-700 w-14 h-14 transform"
@@ -71,9 +73,9 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
         </div>
       </div>
       <div
-        className={`bg-white dark:bg-slate-800 flex flex-col md:w-80 shadow-lg absolute md:static ${
+        className={`bg-white dark:bg-slate-800 flex flex-col md:w-80 shadow-lg absolute inset-0 z-10 md:static ${
           isOpen ? "block" : "hidden"
-        }  inset-0`}
+        }`}
       >
         <div className="shadow-lg h-14 flex items-center justify-between">
           <button
@@ -112,10 +114,10 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 mt-auto">
-          <button className="bg-yellow-500 px-4 py-2 rounded-lg font-semibold">
+          <button className="bg-yellow-500 px-4 py-2 rounded-full shadow-md font-semibold">
             Leave
           </button>
-          <button className="bg-red-500  px-4 py-2 rounded-lg font-semibold">
+          <button className="bg-red-500  px-4 py-2 rounded-full shadow-md font-semibold">
             Delete
           </button>
         </div>

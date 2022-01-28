@@ -76,10 +76,10 @@ export const FieldInput: FC<FieldInputProps> = ({
         ) : null}
       </div>
       {validMessage?.show && (
-        <div className="font-semibold text-green-500">{validMessage.value}</div>
+        <div className="font-thin text-green-500">{validMessage.value}</div>
       )}
       {errorMessage?.show && (
-        <div className="font-semibold text-red-500">{errorMessage.value}</div>
+        <div className="font-thin text-red-500">{errorMessage.value}</div>
       )}
     </>
   );
