@@ -41,9 +41,9 @@
         "summary": "Get all chat rooms.",
         "parameters": [
           {
-            "name": "page",
+            "name": "cursor",
             "in": "query",
-            "schema": { "type": "integer" }
+            "schema": { "type": "string" }
           },
           {
             "name": "size",
@@ -231,9 +231,9 @@
             "required": true
           },
           {
-            "name": "page",
+            "name": "cursor",
             "in": "query",
-            "schema": { "type": "integer" }
+            "schema": { "type": "string" }
           },
           {
             "name": "size",
@@ -275,9 +275,9 @@
             "schema": { "type": "string" }
           },
           {
-            "name": "page",
+            "name": "cursor",
             "in": "query",
-            "schema": { "type": "integer" }
+            "schema": { "type": "string" }
           },
           {
             "name": "size",

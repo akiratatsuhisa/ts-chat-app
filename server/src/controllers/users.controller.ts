@@ -8,11 +8,12 @@ import {
   NotFoundResponse,
 } from "../helpers/constant";
 import { authorize } from "../middlewares/auth";
+import { Types } from "mongoose";
 
 export const usersRouter: IRouter = Router();
 
 const userListValidationChains = [
-  oneOf([query("page").isInt({ min: 0 }), query("page").isEmpty()]),
+  oneOf([query("cursor").isString(), query("size").isEmpty()]),
   oneOf([query("size").isInt({ min: 10, max: 100 }), query("size").isEmpty()]),
 ];
 
@@ -29,16 +30,16 @@ usersRouter.get(
       } as IErrorModelMessageResponse);
     }
 
-    const page = parseInt(req.query?.page as string, 10) || 1;
+    const cursor = req.query?.cursor as string;
     const size = parseInt(req.query?.size as string, 10) || 10;
     const { search } = req.query;
 
     const users = await User.find(
       !search ? {} : { displayName: new RegExp(`.*${search}.*`, "i") }
     )
+      .find(!cursor ? {} : { _id: { $lt: new Types.ObjectId(cursor) } })
       .sort({ createdAt: -1 })
-      .skip((page - 1) * size)
-      .limit(page * size);
+      .limit(size);
     res.status(200).json(users);
   }
 );

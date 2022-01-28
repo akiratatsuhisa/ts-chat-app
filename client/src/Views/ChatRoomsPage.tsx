@@ -1,9 +1,12 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { apiInstance, IChatRoom } from "../Services/Api.service";
 
 interface ChatRoomsPageProps {}
 
 export const ChatRoomsPage: FC<ChatRoomsPageProps> = () => {
+  const [rooms, setRooms] = useState<IChatRoom[]>([]);
+
   const renderItems = [...Array(20)].map((_, index) => (
     <div
       key={index}
@@ -43,6 +46,11 @@ export const ChatRoomsPage: FC<ChatRoomsPageProps> = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">{renderItems}</div>
+      <div className="mt-8 text-center">
+        <button className="bg-cyan-400/50 hover:bg-cyan-400/80 outline-none rounded-xl px-4 py-2 font-semibold">
+          Fetch more
+        </button>
+      </div>
     </div>
   );
 };

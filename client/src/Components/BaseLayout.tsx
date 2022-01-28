@@ -1,6 +1,12 @@
 import { FC, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { XIcon, MenuAlt1Icon, LogoutIcon } from "@heroicons/react/solid";
+import {
+  XIcon,
+  MenuAlt1Icon,
+  LogoutIcon,
+  DatabaseIcon,
+  IdentificationIcon,
+} from "@heroicons/react/solid";
 import { TopNavBarList, TopNavBarListItem } from "./TopNavBarList";
 import { SideNavBarList, SideNavBarListItem } from "./SideNavBarList";
 import { CogIcon } from "@heroicons/react/solid";
@@ -44,11 +50,21 @@ const SettingsComponent: FC = () => {
           </div>
         </div>
         <hr className="bg-slate-300 my-2" />
-        <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2 cursor-pointer">
-          <span className="font- font-bold">...</span>
+        <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 cursor-pointer">
+          <div className=" flex items-center p-2">
+            <div className=" bg-slate-400 dark:bg-slate-700 text-white p-2 rounded-full">
+              <DatabaseIcon className="h-4 w-4" />
+            </div>
+            <span className="flex-auto ml-2 font-semibold">...</span>
+          </div>
         </div>
-        <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 p-2  cursor-pointer">
-          <span className="font- font-bold">...</span>
+        <div className=" hover:bg-slate-300 dark:hover:bg-slate-900 cursor-pointer">
+          <div className=" flex items-center p-2">
+            <div className=" bg-slate-400 dark:bg-slate-700 text-white p-2 rounded-full">
+              <IdentificationIcon className="h-4 w-4" />
+            </div>
+            <span className="flex-auto ml-2 font-semibold">...</span>
+          </div>
         </div>
         {currentUser && (
           <>
@@ -61,7 +77,7 @@ const SettingsComponent: FC = () => {
                 <div className=" bg-slate-400 dark:bg-slate-700 text-white p-2 rounded-full">
                   <LogoutIcon className="h-4 w-4" />
                 </div>
-                <span className="ml-auto font-semibold">Logout</span>
+                <span className="flex-auto ml-2 font-semibold">Logout</span>
               </div>
             </div>
           </>
