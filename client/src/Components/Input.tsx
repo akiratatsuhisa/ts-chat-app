@@ -1,31 +1,23 @@
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 import { CheckCircleIcon, ExclamationCircleIcon } from "@heroicons/react/solid";
-import { useState } from "react";
-import { FocusEventHandler, ChangeEventHandler, FC, ReactElement } from "react";
+import { HTMLProps, useState } from "react";
+import { FC, ReactElement } from "react";
 
-interface IFieldInputMessage {
+interface IInputMessage {
   show?: boolean;
   value?: string | ReactElement | null;
 }
 
-interface FieldInputProps {
+interface InputProps {
   label?: string | ReactElement;
-  name?: string;
   type?: string;
-  value?: any;
-  validMessage?: IFieldInputMessage;
-  errorMessage?: IFieldInputMessage;
-  onChange?: ChangeEventHandler;
-  onBlur?: FocusEventHandler;
+  validMessage?: IInputMessage;
+  errorMessage?: IInputMessage;
 }
 
-export const FieldInput: FC<FieldInputProps> = ({
+export const Input: FC<InputProps & HTMLProps<HTMLInputElement>> = ({
   label,
-  name,
-  value,
   type = "text",
-  onChange,
-  onBlur,
   validMessage,
   errorMessage,
   ...props
@@ -52,10 +44,6 @@ export const FieldInput: FC<FieldInputProps> = ({
         )}
         <input
           {...props}
-          name={name}
-          value={value}
-          onChange={onChange}
-          onBlur={onBlur}
           type={showPassword ? "text" : type}
           className="bg-transparent outline-none w-full flex-auto"
         />

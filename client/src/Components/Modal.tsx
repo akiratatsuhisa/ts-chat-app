@@ -1,6 +1,5 @@
 import { XIcon } from "@heroicons/react/solid";
-import { title } from "process";
-import { isValidElement, FC, useEffect } from "react";
+import { isValidElement, FC, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
 interface ModalProps {
@@ -17,15 +16,15 @@ export const Modal: FC<ModalProps> = ({
   children,
   onHide,
 }) => {
-  const element = document.createElement("div");
+  const [container] = useState(document.createElement("div"));
 
   useEffect(() => {
-    document.body.appendChild(element);
+    document.body.appendChild(container);
 
     return () => {
-      document.body.removeChild(element);
+      document.body.removeChild(container);
     };
-  }, [element]);
+  }, []);
 
   const render = (
     <div
@@ -49,11 +48,7 @@ export const Modal: FC<ModalProps> = ({
             <XIcon className="h-5 w-5" />
           </button>
         </div>
-        {isValidElement(children) ? (
-          { children }
-        ) : (
-          <div className="p-3">{children}</div>
-        )}
+        <div className="flex-auto">{children}</div>
         {footer ? (
           isValidElement(footer) ? (
             { footer }
@@ -66,6 +61,5 @@ export const Modal: FC<ModalProps> = ({
   );
 
   if (!show) return null;
-
-  return ReactDOM.createPortal(render, element);
+  return ReactDOM.createPortal(render, container);
 };

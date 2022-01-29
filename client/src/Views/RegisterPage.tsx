@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { useAuth } from "../Contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { FieldInput } from "../Components/FieldInput";
+import { Input } from "../Components/Input";
 
 interface RegisterFormValues {
   username: string;
@@ -77,7 +77,7 @@ export const RegisterPage: FC = () => {
 
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-3">
-            <FieldInput
+            <Input
               type="text"
               label="Username"
               name="username"
@@ -91,7 +91,7 @@ export const RegisterPage: FC = () => {
             />
           </div>
           <div className="mb-3">
-            <FieldInput
+            <Input
               type="text"
               label="Display name"
               name="displayName"
@@ -107,7 +107,7 @@ export const RegisterPage: FC = () => {
             />
           </div>
           <div className="mb-3">
-            <FieldInput
+            <Input
               type="email"
               label="Email"
               name="email"
@@ -121,7 +121,7 @@ export const RegisterPage: FC = () => {
             />
           </div>
           <div className="mb-3">
-            <FieldInput
+            <Input
               type="password"
               label="Password"
               name="password"
