@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { apiInstance, apiUrl, IChatRoom } from "../Services/Api.service";
 import { uniqBy } from "lodash";
 import { useAuth } from "../Contexts/AuthContext";
+import { apiInstance, apiUrl, IChatRoom } from "../Services/Api.service";
 
 interface ChatRoomsPageProps {}
 
@@ -88,18 +88,18 @@ export const ChatRoomsPage: FC<ChatRoomsPageProps> = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">{renderItems}</div>
-      <div className="mt-8 grid grid-cols-1">
-        <button
-          disabled={isFetching}
-          className="bg-cyan-400 disabled:bg-cyan-300 hover:bg-cyan-500 text-white outline-none rounded-xl px-4 py-2 font-semibold"
-          onClick={() => fetch()}
-        >
-          {isFetching ? (
-            <span className=" inline-block h-8 w-8 rounded-full border-4  border-slate-300/60 border-l-white animate-spin"></span>
-          ) : (
-            "Fetch more"
-          )}
-        </button>
+      <div className="mt-8 text-center">
+        {isFetching ? (
+          <span className=" inline-block h-8 w-8 rounded-full border-4  border-slate-300/60 border-l-white animate-spin"></span>
+        ) : (
+          <button
+            disabled={isFetching}
+            className="bg-cyan-400 disabled:bg-cyan-300 hover:bg-cyan-500 text-white outline-none rounded-xl px-4 py-2 font-semibold"
+            onClick={() => fetch()}
+          >
+            Fetch more
+          </button>
+        )}
       </div>
     </div>
   );

@@ -1,20 +1,63 @@
+import { FC, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   ChatAlt2Icon,
   InformationCircleIcon,
   ArrowLeftIcon,
+  ReplyIcon,
+  XIcon,
 } from "@heroicons/react/solid";
-import { FC, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { TrashIcon } from "@heroicons/react/outline";
+import { apiInstance, apiUrl, IChatRoom } from "../Services/Api.service";
+import { useAuth } from "../Contexts/AuthContext";
 
 interface ChatRoomPageProps {}
 
 export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { socket } = useAuth();
+  const { id } = useParams();
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [room, setRoom] = useState<IChatRoom>();
+  const [message, setMessage] = useState<string>("");
 
   const onOpenSideBar = () => setIsOpen(true);
   const onCloseSideBar = () => setIsOpen(false);
+
+  const fetch = async (): Promise<void> => {
+    if (isFetching) return;
+    setIsFetching(true);
+    try {
+      const result = await apiInstance.get<IChatRoom>(`/chatRooms/${id}`);
+
+      const { data } = result;
+
+      setRoom(data);
+    } catch (error: any) {
+      console.log(error?.response);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const sendMessage = () => {};
+
+  const evictMessage = (messageId: string) => {};
+
+  useEffect(() => {
+    socket?.on("", () => {});
+    socket?.on("", () => {});
+
+    return () => {
+      socket?.off("");
+      socket?.off("");
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    fetch();
+  }, [id]);
 
   const renderList = [...new Array(30)].map((_, index) => {
     const random = Math.floor(Math.random() * (100 - 4)) + 4;
@@ -22,12 +65,10 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
     return (
       <div
         className={`p-2 w-full flex ${mine ? "flex-row" : "flex-row-reverse"}`}
+        key={index}
       >
         <div className={`w-40 md:w-80 ${mine ? "mr-auto" : "ml-auto"}`}></div>
-        <div
-          className="px-3 py-2 bg-white dark:bg-slate-800 rounded-2xl"
-          key={index}
-        >
+        <div className="px-3 py-2 bg-white dark:bg-slate-800 rounded-2xl">
           <span>
             {` Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque
           quod vel sequi dolores! Repellendus ducimus libero ratione molestiae
@@ -50,7 +91,7 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
     <div className="h-full relative flex flex-row felx-nowrap">
       <div className="dark:bg-slate-700 flex-1 flex flex-col">
         <div className="bg-white dark:bg-slate-800 h-14 shadow-lg flex items-center z-10">
-          <h1 className="px-2 text-xl font-bold">Room - long name</h1>
+          <h1 className="px-2 text-xl font-bold">Room - {room?.name}</h1>
           <button
             className="ml-auto flex justify-center items-center hover:bg-gray-200 dark:hover:bg-gray-700 w-14 h-14 transform"
             onClick={() => (isOpen ? onCloseSideBar() : onOpenSideBar())}
@@ -64,12 +105,22 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
         </div>
 
         <div className="bg-white dark:bg-slate-800 shadow-lg flex items-center p-2">
-          <div className="flex flex-nowrap w-full md:mx-4">
-            <input className="dark:bg-slate-600 flex-auto outline-none p-2 pl-4 rounded-l-full border-2 border-cyan-500 focus:border-cyan-600 hover:border-cyan-600" />
-            <button className="bg-cyan-500 focus:bg-cyan-600 hover:bg-cyan-600 text-white py-2 px-4  rounded-r-full">
-              Send
-            </button>
+          <div className="border-2 border-cyan-500 flex-auto flex  py-1 px-3 rounded-xl">
+            <input
+              type="text"
+              className="w-full flex-auto outline-none"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            {message && (
+              <button className="p-1" onClick={() => setMessage("")}>
+                <XIcon className="h-4 w-4 text-slate-500" />
+              </button>
+            )}
           </div>
+          <button className="hover:bg-slate-300 dark:hover:bg-slate-700 p-2 ml-2 rounded-full ">
+            <ReplyIcon className="h-5 w-5 text-cyan-500" />
+          </button>
         </div>
       </div>
       <div
@@ -84,7 +135,7 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
           >
             <ArrowLeftIcon className="h-6 w-6 text-slate-400"></ArrowLeftIcon>
           </button>
-          <h1 className="px-2 text-xl font-bold">Room - long name</h1>
+          <h1 className="px-2 text-xl font-bold">Room - {room?.name}</h1>
           <button
             className="flex justify-center items-center hover:bg-gray-200 dark:hover:bg-gray-700 w-14 h-14 transform"
             onClick={() => navigate("/chat")}
@@ -95,22 +146,19 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
         <div className="p-3 flex-auto">
           <h2 className="text-2xl font-semibold">Users</h2>
           <div>
-            <div className="p-2 flex items-center">
-              <div className="bg-red-500 inline-block h-8 w-8 rounded-full"></div>
-              <div className="flex-auto mx-2">Username</div>
-            </div>
-            <div className="p-2 flex items-center">
-              <div className="bg-green-500 inline-block h-8 w-8 rounded-full"></div>
-              <div className="flex-auto mx-2">Username</div>
-            </div>
-            <div className="p-2 flex items-center">
-              <div className="bg-blue-500 inline-block h-8 w-8 rounded-full"></div>
-              <div className="flex-auto mx-2">Username</div>
-            </div>
-            <div className="p-2 flex items-center">
-              <div className="bg-yellow-500 inline-block h-8 w-8 rounded-full"></div>
-              <div className="flex-auto mx-2">Username</div>
-            </div>
+            {room?.users?.map((user) => (
+              <div key={user._id} className="p-2 flex items-center">
+                <img
+                  className="block h-8 w-8 shadow-lg rounded-full object-cover object-center"
+                  src={new URL(user.avatarUrl, apiUrl).toString()}
+                  alt={user.displayName}
+                />
+                <div className="flex-auto mx-2">{user.displayName}</div>
+                <button className="group hover:bg-red-500 p-2 rounded-full border border-red-500">
+                  <TrashIcon className="h-4 w-4 text-red-500 group-hover:text-white" />
+                </button>
+              </div>
+            ))}
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 mt-auto">

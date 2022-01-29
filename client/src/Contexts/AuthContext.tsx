@@ -29,6 +29,7 @@ function getUserFromAccessToken(token: string): IAuthUser | null {
 
 interface IAuthContext {
   currentUser: IAuthUser | null;
+  socket: Socket | null;
   login: (username: string, password: string) => Promise<string>;
   register: (
     username: string,
@@ -52,7 +53,7 @@ export const AuthProvider: FunctionComponent = ({ children }) => {
   const [accessToken, setAccessToken] = useState<string | null>(
     localStorage.getItem("accessToken") || null
   );
-  const [socket, setSocket] = useState<Socket | null>();
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const setupSocket = (): void => {
     if (!accessToken) return;
@@ -130,7 +131,7 @@ export const AuthProvider: FunctionComponent = ({ children }) => {
     return "Logout successfully.";
   };
 
-  const value: IAuthContext = { currentUser, login, register, logout };
+  const value: IAuthContext = { currentUser, socket, login, register, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
