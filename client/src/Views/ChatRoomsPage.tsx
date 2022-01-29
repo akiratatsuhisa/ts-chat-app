@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { uniqBy } from "lodash";
 import { useAuth } from "../Contexts/AuthContext";
 import { apiInstance, apiUrl, IChatRoom } from "../Services/Api.service";
+import { Modal } from "../Components/Modal";
 
 interface ChatRoomsPageProps {}
 
@@ -46,7 +47,7 @@ export const ChatRoomsPage: FC<ChatRoomsPageProps> = () => {
     ({ _id, name, users, createdAt, updatedAt }) => (
       <div
         key={_id}
-        className="bg-white dark:bg-slate-900 border-r-4 border-cyan-400 p-3 shadow-md rounded-md"
+        className="bg-white dark:bg-slate-900 border-r-4 border-cyan-400 hover:border-teal-400 p-3 shadow-md hover:shadow-lg rounded-md transition-all hover:scale-105 duration-200 ease-in-out "
       >
         <h3 className="text-lg hover:text-cyan-500">
           <span className="text-slate-600 dark:text-slate-300  font-thin">
@@ -85,6 +86,7 @@ export const ChatRoomsPage: FC<ChatRoomsPageProps> = () => {
         <button className="ml-auto px-3 py-2 rounded-full bg-green-500 hover:bg-green-600 text-white">
           New Room
         </button>
+        <Modal show={false}></Modal>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">{renderItems}</div>

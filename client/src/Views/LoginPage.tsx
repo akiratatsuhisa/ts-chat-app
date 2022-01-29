@@ -56,7 +56,7 @@ export const LoginPage: FC = () => {
         {alert.show && (
           <Alert
             show={alert.show}
-            onClose={() => setAlert({ ...alert, show: false })}
+            onHide={() => setAlert({ ...alert, show: false })}
             color={alert.color}
             closable={true}
           >

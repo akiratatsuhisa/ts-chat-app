@@ -24,7 +24,7 @@ interface AlertProps {
   color?: string;
   show?: boolean;
   closable?: boolean;
-  onClose?: () => void;
+  onHide?: () => void;
 }
 
 export const Alert: FC<AlertProps> = ({
@@ -32,12 +32,13 @@ export const Alert: FC<AlertProps> = ({
   color = "green",
   show = true,
   closable = false,
-  onClose,
+  onHide,
   children,
 }) => {
   const [isShow, setIsShow] = useState<boolean>(show);
-  let colorClasses = getColorClasses(color);
+  const colorClasses = getColorClasses(color);
 
+  if (!show) return null;
   return (
     <div
       className={`${
@@ -51,7 +52,7 @@ export const Alert: FC<AlertProps> = ({
             <button
               onClick={() => {
                 setIsShow(false);
-                onClose?.();
+                onHide?.();
               }}
             >
               <XIcon className="h-5 w-5"></XIcon>

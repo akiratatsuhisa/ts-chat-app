@@ -57,7 +57,7 @@ export const FieldInput: FC<FieldInputProps> = ({
           onChange={onChange}
           onBlur={onBlur}
           type={showPassword ? "text" : type}
-          className="bg-white dark:bg-slate-800 outline-none w-full flex-auto"
+          className="bg-transparent outline-none w-full flex-auto"
         />
         {type === "password" ? (
           <div className="z-10">

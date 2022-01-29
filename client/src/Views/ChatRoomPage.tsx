@@ -10,6 +10,7 @@ import {
 import { TrashIcon } from "@heroicons/react/outline";
 import { apiInstance, apiUrl, IChatRoom } from "../Services/Api.service";
 import { useAuth } from "../Contexts/AuthContext";
+import { Modal } from "../Components/Modal";
 
 interface ChatRoomPageProps {}
 
@@ -108,7 +109,7 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
           <div className="border-2 border-cyan-500 flex-auto flex  py-1 px-3 rounded-xl">
             <input
               type="text"
-              className="w-full flex-auto outline-none"
+              className="w-full flex-auto outline-none bg-transparent"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
@@ -143,29 +144,36 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
             <ChatAlt2Icon className="h-6 w-6 text-slate-400"></ChatAlt2Icon>
           </button>
         </div>
-        <div className="p-3 flex-auto">
-          <h2 className="text-2xl font-semibold">Users</h2>
-          <div>
-            {room?.users?.map((user) => (
-              <div key={user._id} className="p-2 flex items-center">
-                <img
-                  className="block h-8 w-8 shadow-lg rounded-full object-cover object-center"
-                  src={new URL(user.avatarUrl, apiUrl).toString()}
-                  alt={user.displayName}
-                />
-                <div className="flex-auto mx-2">{user.displayName}</div>
-                <button className="group hover:bg-red-500 p-2 rounded-full border border-red-500">
-                  <TrashIcon className="h-4 w-4 text-red-500 group-hover:text-white" />
-                </button>
-              </div>
-            ))}
+        <div className="relative flex-auto">
+          <div className="absolute inset-0 overflow-y-auto">
+            <div className="flex p-3">
+              <h2 className="text-2xl font-semibold">Users</h2>
+              <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full shadow-md font-semibold ml-auto">
+                Add Users
+              </button>
+            </div>
+            <div className="p-3 space-y-3">
+              {room?.users?.map((user) => (
+                <div key={user._id} className="flex items-center">
+                  <img
+                    className="block h-8 w-8 shadow-lg rounded-full object-cover object-center"
+                    src={new URL(user.avatarUrl, apiUrl).toString()}
+                    alt={user.displayName}
+                  />
+                  <div className="flex-auto mx-2">{user.displayName}</div>
+                  <button className="group hover:bg-red-500 p-2 rounded-full border border-red-500">
+                    <TrashIcon className="h-4 w-4 text-red-500 group-hover:text-white" />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 mt-auto">
-          <button className="bg-yellow-500 px-4 py-2 rounded-full shadow-md font-semibold">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-3 mt-auto">
+          <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full shadow-md font-semibold">
             Leave
           </button>
-          <button className="bg-red-500  px-4 py-2 rounded-full shadow-md font-semibold">
+          <button className="bg-red-500  hover:bg-red-600 text-white px-4 py-2 rounded-full shadow-md font-semibold">
             Delete
           </button>
         </div>
