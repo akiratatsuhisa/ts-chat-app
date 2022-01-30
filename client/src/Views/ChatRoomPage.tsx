@@ -1,31 +1,30 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useMemo, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ChatAlt2Icon,
   InformationCircleIcon,
   ArrowLeftIcon,
-  ReplyIcon,
-  XIcon,
 } from "@heroicons/react/solid";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { TrashIcon } from "@heroicons/react/outline";
-import { apiInstance, apiUrl, IChatRoom } from "../Services/Api.service";
+import { apiInstance, apiUrl, IChatRoom, IUser } from "../Services/Api.service";
 import { useAuth } from "../Contexts/AuthContext";
-import { Modal } from "../Components/Modal";
-import { Alert } from "../Components/Alert";
-import { Input } from "../Components/Input";
-
+import { MessagesContent } from "../Components/ChatRoom/MessagesContent";
+import { UpdateRoomContent } from "../Components/ChatRoom/UpdateRoomContent";
+import { UsersContent } from "../Components/ChatRoom/UsersContent";
+import { DeleteRoomContent } from "../Components/ChatRoom/DeleteRoomContent";
 interface ChatRoomPageProps {}
 
 export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { socket } = useAuth();
   const { id } = useParams();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [room, setRoom] = useState<IChatRoom>();
-  const [message, setMessage] = useState<string>("");
+  const users = useMemo(() => {
+    const data = {} as { [key: string]: IUser };
+    room?.users?.forEach((user) => (data[user._id] = user));
+    return data;
+  }, [room]);
 
   const onOpenSideBar = () => setIsOpen(true);
   const onCloseSideBar = () => setIsOpen(false);
@@ -37,6 +36,10 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
       const result = await apiInstance.get<IChatRoom>(`/chatRooms/${id}`);
 
       const { data } = result;
+      data.users = data.users?.map((user) => {
+        user.avatarUrl = new URL(user.avatarUrl, apiUrl).toString();
+        return user;
+      });
 
       setRoom(data);
     } catch (error: any) {
@@ -46,49 +49,34 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
     }
   };
 
-  const sendMessage = () => {};
-
-  const evictMessage = (messageId: string) => {};
-
   useEffect(() => {
-    socket?.on("", () => {});
+    socket?.emit("joinRoom", { chatRoomId: id });
+
+    socket?.on(
+      "modifyUsers",
+      ({ chatRoomId, users }: { chatRoomId: string; users: any[] }) => {
+        console.log("modify");
+        if (chatRoomId !== id) return;
+        const clone: IChatRoom = { ...(room as IChatRoom) };
+        clone.users = users?.map((user) => {
+          user.avatarUrl = new URL(user.avatarUrl, apiUrl).toString();
+          return user;
+        });
+        setRoom(clone);
+      }
+    );
 
     return () => {
-      socket?.off("");
+      socket?.emit("leaveRoom", { chatRoomId: id });
+      socket?.off("modifyUsers");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
   useEffect(() => {
     fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
-  const renderList = [...new Array(30)].map((_, index) => {
-    const random = Math.floor(Math.random() * (100 - 4)) + 4;
-    const mine = random % 2 === 0;
-    return (
-      <div
-        className={`p-2 w-full flex ${mine ? "flex-row" : "flex-row-reverse"}`}
-        key={index}
-      >
-        <div className={`w-40 md:w-80 ${mine ? "mr-auto" : "ml-auto"}`}></div>
-        <div className="px-3 py-2 bg-white dark:bg-slate-800 rounded-2xl">
-          <span>
-            {` Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque
-          quod vel sequi dolores! Repellendus ducimus libero ratione molestiae
-          reiciendis nemo voluptatem recusandae sint magnam necessitatibus!
-          Earum modi repudiandae ex accusantium!`.slice(0, random)}
-          </span>
-        </div>
-        <div className="m-2">
-          <div
-            className={`h-6 w-6 rounded-full ${
-              mine ? "bg-green-500" : "bg-blue-500"
-            }  shadow-md`}
-          ></div>
-        </div>
-      </div>
-    );
-  });
 
   return (
     <div className="h-full relative flex flex-row felx-nowrap">
@@ -103,28 +91,7 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
           </button>
         </div>
 
-        <div className="flex-auto relative overflow-y-auto">
-          <div className="absolute inset-0 p-3">{renderList}</div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-800 shadow-lg flex items-center p-2">
-          <div className="border-2 border-cyan-500 flex-auto flex  py-1 px-3 rounded-xl">
-            <input
-              type="text"
-              className="w-full flex-auto outline-none bg-transparent"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            {message && (
-              <button className="p-1" onClick={() => setMessage("")}>
-                <XIcon className="h-4 w-4 text-slate-500" />
-              </button>
-            )}
-          </div>
-          <button className="hover:bg-slate-300 dark:hover:bg-slate-700 p-2 ml-2 rounded-full ">
-            <ReplyIcon className="h-5 w-5 text-cyan-500" />
-          </button>
-        </div>
+        <MessagesContent users={users} />
       </div>
       <div
         className={`bg-white dark:bg-slate-800 flex flex-col md:w-80 shadow-lg absolute inset-0 z-10 md:static ${
@@ -148,33 +115,10 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
         </div>
         <div className="relative flex-auto">
           <div className="absolute inset-0 overflow-y-auto">
-            <div className="flex p-3">
-              <h2 className="text-2xl font-semibold">Users</h2>
-              <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full shadow-md font-semibold ml-auto">
-                Add Users
-              </button>
-            </div>
-            <div className="p-3 space-y-3">
-              {room?.users?.map((user) => (
-                <div key={user._id} className="flex items-center">
-                  <img
-                    className="block h-8 w-8 shadow-lg rounded-full object-cover object-center"
-                    src={new URL(user.avatarUrl, apiUrl).toString()}
-                    alt={user.displayName}
-                  />
-                  <div className="flex-auto mx-2">{user.displayName}</div>
-                  <button className="group hover:bg-red-500 p-2 rounded-full border border-red-500">
-                    <TrashIcon className="h-4 w-4 text-red-500 group-hover:text-white" />
-                  </button>
-                </div>
-              ))}
-            </div>
+            <UsersContent users={room?.users}></UsersContent>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 mt-auto">
-          <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full shadow-md font-semibold">
-            Leave
-          </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-3 mt-auto">
           <UpdateRoomContent
             id={id as string}
             onUpdate={(data) => {
@@ -186,193 +130,5 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
         </div>
       </div>
     </div>
-  );
-};
-
-interface UpdateRoomFormValues {
-  name: string;
-}
-
-interface UpdateRoomContentProps {
-  id: string;
-  onUpdate: (room: IChatRoom) => void;
-}
-
-const UpdateRoomContent: FC<UpdateRoomContentProps> = ({ id, onUpdate }) => {
-  const [show, setShow] = useState<boolean>(false);
-  const [alert, setAlert] = useState<any>({
-    color: "",
-    message: "",
-    show: false,
-  });
-
-  const formik = useFormik<UpdateRoomFormValues>({
-    initialValues: {
-      name: "",
-    },
-    validationSchema: Yup.object({
-      name: Yup.string().required().min(3).max(256),
-    }),
-    async onSubmit(values: UpdateRoomFormValues) {
-      try {
-        const result = await apiInstance.put<IChatRoom>(
-          `/chatRooms/${id}`,
-          values
-        );
-
-        const room = result.data;
-        setAlert({
-          message: "Updated",
-          color: "green",
-          show: true,
-        });
-
-        onUpdate(room);
-        setTimeout(() => {
-          setAlert({
-            color: "",
-            message: "",
-            show: false,
-          });
-          setShow(false);
-        }, 1500);
-      } catch (e: any) {
-        setAlert({
-          message: e.response.data.message,
-          color: "red",
-          show: true,
-        });
-      }
-    },
-  });
-  return (
-    <>
-      <button
-        className="bg-blue-500  hover:bg-blue-600 text-white px-4 py-2 rounded-full shadow-md font-semibold"
-        onClick={() => setShow(true)}
-      >
-        Update
-      </button>
-
-      <Modal show={show} onHide={() => setShow(false)} title="Update Room">
-        <div className="p-3">
-          <div className="w-full md:w-2/3 mx-auto">
-            {alert.show && (
-              <Alert
-                show={alert.show}
-                onHide={() => setAlert({ ...alert, show: false })}
-                color={alert.color}
-                closable={true}
-              >
-                {alert.message}
-              </Alert>
-            )}
-            <form onSubmit={formik.handleSubmit}>
-              <div className="mb-3">
-                <Input
-                  label="Room name"
-                  placeholder="enter room name..."
-                  type="text"
-                  name="name"
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  errorMessage={{
-                    show: !!(formik.touched.name && formik.errors.name),
-                    value: formik.errors.name,
-                  }}
-                ></Input>
-              </div>
-              <div className="grid grid-cols-1 mb-3">
-                <button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg"
-                >
-                  Update
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </Modal>
-    </>
-  );
-};
-
-interface DeleteRoomContentProps {
-  id: string;
-}
-
-const DeleteRoomContent: FC<DeleteRoomContentProps> = ({ id }) => {
-  const [show, setShow] = useState<boolean>(false);
-  const navigate = useNavigate();
-  const [alert, setAlert] = useState<any>({
-    color: "",
-    message: "",
-    show: false,
-  });
-
-  const formik = useFormik({
-    initialValues: {},
-    async onSubmit() {
-      try {
-        const result = await apiInstance.delete<IChatRoom>(`/chatRooms/${id}`);
-
-        const room = result.data;
-        setAlert({
-          message: "Deleted",
-          color: "green",
-          show: true,
-        });
-
-        setTimeout(() => {
-          navigate("/chat");
-        }, 1500);
-      } catch (e: any) {
-        setAlert({
-          message: e.response.data.message,
-          color: "red",
-          show: true,
-        });
-      }
-    },
-  });
-  return (
-    <>
-      <button
-        className="bg-red-500  hover:bg-red-600 text-white px-4 py-2 rounded-full shadow-md font-semibold"
-        onClick={() => setShow(true)}
-      >
-        Delete
-      </button>
-
-      <Modal show={show} onHide={() => setShow(false)} title="Update Room">
-        <div className="p-3">
-          <div className="w-full md:w-2/3 mx-auto">
-            {alert.show && (
-              <Alert
-                show={alert.show}
-                onHide={() => setAlert({ ...alert, show: false })}
-                color={alert.color}
-                closable={true}
-              >
-                {alert.message}
-              </Alert>
-            )}
-            <form onSubmit={formik.handleSubmit}>
-              <div className="mb-3"></div>
-              <div className="grid grid-cols-1 mb-3">
-                <button
-                  type="submit"
-                  className="bg-red-500 hover:bg-blue-600 px-4 py-2 rounded-lg"
-                >
-                  Delete
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </Modal>
-    </>
   );
 };

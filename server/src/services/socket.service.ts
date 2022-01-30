@@ -1,9 +1,9 @@
 import { Server as HttpServer } from "http";
 import { Server, Socket, Namespace, ServerOptions } from "socket.io";
-import { ChatRoom } from "../models/ChatRoom.model";
+import { Types } from "mongoose";
+import { ChatRoom, IChatRoomDocument } from "../models/ChatRoom.model";
 import { ChatMessage } from "../models/ChatMessage.model";
 import { verifyJwtToken } from "./auth.service";
-
 var io: Server;
 
 export const getIo = function (): Server {
@@ -72,7 +72,9 @@ export const registerChatSocket = (
 
     socket.on("leaveRoom", ({ chatRoomId }) => {
       socket.leave(chatRoomId);
-      `user: ${socket.data.user.username} left chatroom: ${chatRoomId}`;
+      console.log(
+        `user: ${socket.data.user.username} left chatroom: ${chatRoomId}`
+      );
     });
 
     socket.on("sendMessage", async ({ chatRoomId, content }) => {
@@ -92,12 +94,16 @@ export const registerChatSocket = (
       });
       await chatMessage.save();
 
-      socket.to(chatRoomId).emit("receiveMessage", {
+      const data = {
         id: chatMessage.id,
         chatRoomId,
         userId: socket.data.user.id,
         content,
-      });
+        createdAt: chatMessage.createdAt,
+        updatedAt: chatMessage.updatedAt,
+      };
+      socket.to(chatRoomId).emit("receiveMessage", data);
+      socket.emit("receiveMessage", data);
     });
 
     socket.on("evictMessage", async ({ chatMessageId }) => {
@@ -115,10 +121,12 @@ export const registerChatSocket = (
 
       await chatMessage.deleteOne();
 
-      socket.to(chatRoomId).emit("admitMessage", {
+      const data = {
         id: chatMessage.id,
         chatRoomId: chatMessage.chatRoomId,
-      });
+      };
+      socket.to(chatRoomId).emit("admitMessage", data);
+      socket.emit("admitMessage", data);
     });
 
     socket.on(
@@ -146,13 +154,20 @@ export const registerChatSocket = (
             break;
         }
 
-        const result = await chatRoom
-          .updateOne({ users: updateUsers }, { new: true })
-          .populate("users");
+        const result: IChatRoomDocument = await ChatRoom.findByIdAndUpdate(
+          chatRoomId,
+          { users: updateUsers.map((x) => new Types.ObjectId(x)) },
+          { new: true }
+        ).populate("users");
+
         console.log(`users: ${updateUsers.join(", ")} in room: ${chatRoom.id}`);
-        socket
-          .to(chatRoomId)
-          .emit("modifyUsers", { chatRoomId, users: result.users });
+
+        const data = {
+          chatRoomId,
+          users: result.users,
+        };
+        socket.to(chatRoomId).emit("modifyUsers", data);
+        socket.emit("modifyUsers", data);
       }
     );
   });

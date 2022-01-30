@@ -34,9 +34,9 @@ chatRoomsRouter.get(
     const chatRooms = await ChatRoom.find(
       !cursor ? {} : { _id: { $lt: new Types.ObjectId(cursor) } }
     )
-      .populate("users")
       .sort({ createdAt: -1 })
-      .limit(size);
+      .limit(size)
+      .populate("users");
     res.status(200).json(chatRooms);
   }
 );
@@ -187,7 +187,8 @@ chatRoomsRouter.get(
     const messages = await ChatMessage.findByRoomId(req.params.id)
       .find(!cursor ? {} : { _id: { $lt: new Types.ObjectId(cursor) } })
       .sort({ createdAt: -1 })
-      .limit(size);
+      .limit(size)
+      .populate("user");
 
     res.status(200).json(messages);
   }
