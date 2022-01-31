@@ -1,7 +1,7 @@
 import { Server as HttpServer } from "http";
 import { Server, Socket, Namespace, ServerOptions } from "socket.io";
 import { Types } from "mongoose";
-import { ChatRoom, IChatRoomDocument } from "../models/ChatRoom.model";
+import { ChatRoom } from "../models/ChatRoom.model";
 import { ChatMessage } from "../models/ChatMessage.model";
 import { verifyJwtToken } from "./auth.service";
 var io: Server;
@@ -58,7 +58,7 @@ export const registerChatSocket = (
         `user: ${socket.data.user.username} disconnected: ${socket.data.user.id}`
       );
     });
-
+    1;
     socket.on("joinRoom", async ({ chatRoomId }) => {
       if (!(await ChatRoom.hasUserInRoom(chatRoomId, socket.data.user.id))) {
         return;
@@ -154,7 +154,7 @@ export const registerChatSocket = (
             break;
         }
 
-        const result: IChatRoomDocument = await ChatRoom.findByIdAndUpdate(
+        const result = await ChatRoom.findByIdAndUpdate(
           chatRoomId,
           { users: updateUsers.map((x) => new Types.ObjectId(x)) },
           { new: true }
@@ -164,7 +164,7 @@ export const registerChatSocket = (
 
         const data = {
           chatRoomId,
-          users: result.users,
+          users: result?.users ?? [],
         };
         socket.to(chatRoomId).emit("modifyUsers", data);
         socket.emit("modifyUsers", data);
