@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { uniqBy } from "lodash";
 import { useAuth } from "../Contexts/AuthContext";
@@ -11,6 +11,7 @@ export const ChatRoomsPage: FC<ChatRoomsPageProps> = () => {
   const { currentUser } = useAuth();
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [rooms, setRooms] = useState<IChatRoom[]>([]);
+  const mountedRef = useRef(true);
 
   const fetch = async (reset: boolean = false): Promise<void> => {
     if (isFetching) return;
@@ -26,20 +27,26 @@ export const ChatRoomsPage: FC<ChatRoomsPageProps> = () => {
 
       const { data } = result;
 
+      if (!mountedRef.current) return;
       setRooms((prevRooms) =>
         reset ? data : uniqBy([...prevRooms, ...data], (room) => room._id)
       );
     } catch (error: any) {
       console.log(error?.response);
-    } finally {
-      setTimeout(() => {
-        setIsFetching(false);
-      }, 1000);
     }
+
+    setTimeout(() => {
+      if (!mountedRef.current) return;
+      setIsFetching(false);
+    }, 1000);
   };
 
   useEffect(() => {
     fetch(true);
+
+    return () => {
+      mountedRef.current = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

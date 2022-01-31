@@ -1,4 +1,4 @@
-import { FC, useMemo, useEffect, useState } from "react";
+import { FC, useMemo, useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ChatAlt2Icon,
@@ -20,6 +20,7 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [room, setRoom] = useState<IChatRoom>();
+  const mountedRef = useRef(true);
   const users = useMemo(() => {
     const data = {} as { [key: string]: IUser };
     room?.users?.forEach((user) => (data[user._id] = user));
@@ -41,10 +42,12 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
         return user;
       });
 
+      if (!mountedRef.current) return;
       setRoom(data);
     } catch (error: any) {
       console.log(error?.response);
     } finally {
+      if (!mountedRef.current) return;
       setIsFetching(false);
     }
   };
@@ -75,6 +78,10 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
 
   useEffect(() => {
     fetch();
+
+    return () => {
+      mountedRef.current = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 

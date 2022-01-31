@@ -5,7 +5,7 @@ import {
   XIcon,
 } from "@heroicons/react/solid";
 import { uniqBy } from "lodash";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../Contexts/AuthContext";
 import { apiInstance, IChatMessage, IUser } from "../../Services/Api.service";
@@ -53,6 +53,7 @@ export const MessagesContent: FC<MessagesContentProps> = ({ users }) => {
 
   useEffect(() => {
     fetch(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -78,7 +79,7 @@ export const MessagesContent: FC<MessagesContentProps> = ({ users }) => {
           chatRoom_id: chatRoomId,
           user_id: userId,
           content,
-          createdAt: new Date(createdAt),
+          createdAt: createdAt,
         } as IChatMessage;
         setMessages((prevMessages) =>
           uniqBy([...prevMessages, newMessage], (x) => x._id)
@@ -111,7 +112,7 @@ export const MessagesContent: FC<MessagesContentProps> = ({ users }) => {
 
   const renderItems = messages.map(({ _id, content, user_id, createdAt }) => {
     const isCurrentUserMessage = currentUser?.id === user_id;
-    const date = new Date(createdAt as Date);
+    const date = new Date(createdAt as string);
     const user = users[user_id as string];
     return (
       <div key={_id} className="flex flex-col">

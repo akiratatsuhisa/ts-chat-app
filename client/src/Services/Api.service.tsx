@@ -12,8 +12,8 @@ export interface IChatRoom {
   _id: string;
   name: string;
   users?: IUser[];
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IChatMessage {
@@ -21,8 +21,8 @@ export interface IChatMessage {
   content: string;
   chatRoom_id?: string;
   user_id?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IAuthUser {

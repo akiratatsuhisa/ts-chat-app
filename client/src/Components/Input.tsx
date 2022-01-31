@@ -1,6 +1,6 @@
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 import { CheckCircleIcon, ExclamationCircleIcon } from "@heroicons/react/solid";
-import { HTMLProps, useState } from "react";
+import { HTMLProps, InputHTMLAttributes, useState } from "react";
 import { FC, ReactElement } from "react";
 
 export interface IInputMessage {
@@ -8,14 +8,14 @@ export interface IInputMessage {
   value?: string | ReactElement | null;
 }
 
-interface InputProps {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string | ReactElement;
   type?: string;
   validMessage?: IInputMessage;
   errorMessage?: IInputMessage;
 }
 
-export const Input: FC<InputProps & HTMLProps<HTMLInputElement>> = ({
+export const Input: FC<InputProps> = ({
   label,
   type = "text",
   validMessage,
