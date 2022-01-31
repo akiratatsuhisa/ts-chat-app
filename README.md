@@ -93,7 +93,7 @@ See the [official Docker installation documentation](https://docs.docker.com/get
 
 ### Installation
 
-Clone the repository, and create `.env` files same as [above](local-installation).
+Clone the repository, and create `.env` files same as [above](#local-installation).
 
 Create an `.env` file in root repository folder and add all below values.
 * `MONGODB_DATABASE_NAME` - Database name storage at docker volume
@@ -115,4 +115,4 @@ To stop the containers: `docker-compose down`.
 To remove images and volumes: `docker-compose rm -f -s -v`.
 
 ## License
-Released under the [Released under the MIT license.](https://github.com/akiratatsuhisa/ts-chat-app/blob/master/LICENSE)
+Released under the [Released under the MIT license.](LICENSE)
