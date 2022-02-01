@@ -62,6 +62,7 @@ export const UpdateRoomContent: FC<UpdateRoomContentProps> = ({ id, onUpdate }) 
       }
     },
   });
+ 
   return (
     <>
       <button

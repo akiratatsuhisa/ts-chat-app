@@ -18,6 +18,7 @@ const SettingsComponent: FC = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const { isDark, setDarkModeHandle } = useTheme();
+
   return (
     <div className="group mx-3 relative inline-block">
       <div className=" bg-slate-300 dark:bg-slate-700 text-white p-2  rounded-full shadow-md cursor-pointer">

@@ -95,7 +95,7 @@ export const registerChatSocket = (
       });
       await chatMessage.save();
       const user = await User.findById(socket.data.user.id);
-      const data = {
+      io.in(chatRoomId).emit("receiveMessage", {
         id: chatMessage.id,
         chatRoomId,
         userId: socket.data.user.id,
@@ -103,9 +103,7 @@ export const registerChatSocket = (
         content,
         createdAt: chatMessage.createdAt,
         updatedAt: chatMessage.updatedAt,
-      };
-      socket.to(chatRoomId).emit("receiveMessage", data);
-      socket.emit("receiveMessage", data);
+      });
     });
 
     socket.on("evictMessage", async ({ chatMessageId }) => {
@@ -123,12 +121,10 @@ export const registerChatSocket = (
 
       await chatMessage.deleteOne();
 
-      const data = {
+      io.in(chatRoomId).emit("admitMessage", {
         id: chatMessage.id,
         chatRoomId: chatMessage.chatRoomId,
-      };
-      socket.to(chatRoomId).emit("admitMessage", data);
-      socket.emit("admitMessage", data);
+      });
     });
 
     socket.on(
@@ -164,12 +160,10 @@ export const registerChatSocket = (
 
         console.log(`users: ${updateUsers.join(", ")} in room: ${chatRoom.id}`);
 
-        const data = {
+        io.in(chatRoomId).emit("modifyUsers", {
           chatRoomId,
           users: result?.users ?? [],
-        };
-        socket.to(chatRoomId).emit("modifyUsers", data);
-        socket.emit("modifyUsers", data);
+        });
       }
     );
   });

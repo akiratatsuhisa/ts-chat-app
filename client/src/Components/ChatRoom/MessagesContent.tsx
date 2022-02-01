@@ -57,49 +57,54 @@ export const MessagesContent: FC = () => {
 
   useEffect(() => {
     const paramId = id;
-    socket?.on(
-      "receiveMessage",
-      ({
-        id,
-        chatRoomId,
-        userId,
+
+    const receiveMessageListener = ({
+      id,
+      chatRoomId,
+      userId,
+      user,
+      content,
+      createdAt,
+    }: {
+      id: string;
+      chatRoomId: string;
+      userId: string;
+      user: IUser;
+      content: string;
+      createdAt: string;
+    }) => {
+      if (chatRoomId !== paramId) return;
+      const newMessage = {
+        _id: id,
+        chatRoom_id: chatRoomId,
+        user_id: userId,
         user,
         content,
-        createdAt,
-      }: {
-        id: string;
-        chatRoomId: string;
-        userId: string;
-        user: IUser;
-        content: string;
-        createdAt: string;
-      }) => {
-        if (chatRoomId !== paramId) return;
-        const newMessage = {
-          _id: id,
-          chatRoom_id: chatRoomId,
-          user_id: userId,
-          user,
-          content,
-          createdAt: createdAt,
-        } as IChatMessage;
-        setMessages((prevMessages) =>
-          uniqBy([...prevMessages, newMessage], (x) => x._id)
-        );
-      }
-    );
-    socket?.on(
-      "admitMessage",
-      ({ id, chatRoomId }: { id: string; chatRoomId: string }) => {
-        if (chatRoomId !== paramId) return;
-        setMessages((prevMessages) =>
-          prevMessages.filter((message) => message._id !== id)
-        );
-      }
-    );
+        createdAt: createdAt,
+      } as IChatMessage;
+      setMessages((prevMessages) =>
+        uniqBy([...prevMessages, newMessage], (x) => x._id)
+      );
+    };
+    const admitMessageListener = ({
+      id,
+      chatRoomId,
+    }: {
+      id: string;
+      chatRoomId: string;
+    }) => {
+      if (chatRoomId !== paramId) return;
+      setMessages((prevMessages) =>
+        prevMessages.filter((message) => message._id !== id)
+      );
+    };
+
+    socket?.on("receiveMessage", receiveMessageListener);
+    socket?.on("admitMessage", admitMessageListener);
+ 
     return () => {
-      socket?.off("receiveMessage");
-      socket?.off("admitMessage");
+      socket?.off("receiveMessage", receiveMessageListener);
+      socket?.off("admitMessage", admitMessageListener);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);

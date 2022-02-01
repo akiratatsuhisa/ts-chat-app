@@ -50,22 +50,27 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
   useEffect(() => {
     socket?.emit("joinRoom", { chatRoomId: id });
 
-    socket?.on(
-      "modifyUsers",
-      ({ chatRoomId, users }: { chatRoomId: string; users: any[] }) => {
-        if (chatRoomId !== id) return;
-        const clone: IChatRoom = { ...(room as IChatRoom) };
-        clone.users = users?.map((user) => {
-          user.avatarUrl = new URL(user.avatarUrl, apiUrl).toString();
-          return user;
-        });
-        setRoom(clone);
-      }
-    );
+    const modifyUsersListener = ({
+      chatRoomId,
+      users,
+    }: {
+      chatRoomId: string;
+      users: any[];
+    }) => {
+      if (chatRoomId !== id) return;
+      const clone: IChatRoom = { ...(room as IChatRoom) };
+      clone.users = users?.map((user) => {
+        user.avatarUrl = new URL(user.avatarUrl, apiUrl).toString();
+        return user;
+      });
+      setRoom(clone);
+    };
+   
+    socket?.on("modifyUsers", modifyUsersListener);
 
     return () => {
       socket?.emit("leaveRoom", { chatRoomId: id });
-      socket?.off("modifyUsers");
+      socket?.off("modifyUsers", modifyUsersListener);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);

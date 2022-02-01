@@ -43,6 +43,7 @@ export const DeleteRoomContent: FC<DeleteRoomContentProps> = ({ id }) => {
       }
     },
   });
+ 
   return (
     <>
       <button
