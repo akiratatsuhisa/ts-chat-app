@@ -1,6 +1,6 @@
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 import { CheckCircleIcon, ExclamationCircleIcon } from "@heroicons/react/solid";
-import { HTMLProps, InputHTMLAttributes, useState } from "react";
+import { InputHTMLAttributes, useState } from "react";
 import { FC, ReactElement } from "react";
 
 export interface IInputMessage {

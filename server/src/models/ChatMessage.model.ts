@@ -36,20 +36,25 @@ const schema = new Schema<IChatMessageDocument, IChatMessageModel>(
     user_id: { type: Schema.Types.ObjectId, required: true, alias: "userId" },
     content: { type: String, required: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
+  }
 );
 
 schema.virtual("chatRoom", {
   ref: "ChatRoom",
-  localField: "_id",
-  foreignField: "chatRoom_id",
+  localField: "chatRoom_id",
+  foreignField: "_id",
   justOne: true,
 });
 
 schema.virtual("user", {
   ref: "User",
-  localField: "_id",
-  foreignField: "user_id",
+  localField: "user_id",
+  foreignField: "_id",
   justOne: true,
 });
 

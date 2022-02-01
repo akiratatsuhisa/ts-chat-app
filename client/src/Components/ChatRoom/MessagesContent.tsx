@@ -8,15 +8,14 @@ import { uniqBy } from "lodash";
 import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../Contexts/AuthContext";
-import { apiInstance, IChatMessage, IUser } from "../../Services/Api.service";
+import {
+  apiInstance,
+  apiUrl,
+  IChatMessage,
+  IUser,
+} from "../../Services/Api.service";
 
-interface MessagesContentProps {
-  users: {
-    [key: string]: IUser;
-  };
-}
-
-export const MessagesContent: FC<MessagesContentProps> = ({ users }) => {
+export const MessagesContent: FC = () => {
   const { socket, currentUser } = useAuth();
   const { id } = useParams();
   const [messages, setMessages] = useState<IChatMessage[]>([]);
@@ -64,12 +63,14 @@ export const MessagesContent: FC<MessagesContentProps> = ({ users }) => {
         id,
         chatRoomId,
         userId,
+        user,
         content,
         createdAt,
       }: {
         id: string;
         chatRoomId: string;
         userId: string;
+        user: IUser;
         content: string;
         createdAt: string;
       }) => {
@@ -78,6 +79,7 @@ export const MessagesContent: FC<MessagesContentProps> = ({ users }) => {
           _id: id,
           chatRoom_id: chatRoomId,
           user_id: userId,
+          user,
           content,
           createdAt: createdAt,
         } as IChatMessage;
@@ -99,6 +101,7 @@ export const MessagesContent: FC<MessagesContentProps> = ({ users }) => {
       socket?.off("receiveMessage");
       socket?.off("admitMessage");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
   const sendMessage = () => {
@@ -110,63 +113,66 @@ export const MessagesContent: FC<MessagesContentProps> = ({ users }) => {
     socket?.emit("evictMessage", { chatMessageId: messageId });
   };
 
-  const renderItems = messages.map(({ _id, content, user_id, createdAt }) => {
-    const isCurrentUserMessage = currentUser?.id === user_id;
-    const date = new Date(createdAt as string);
-    const user = users[user_id as string];
-    return (
-      <div key={_id} className="flex flex-col">
-        <div
-          className={`p-2 w-full flex ${
-            isCurrentUserMessage ? "flex-row" : "flex-row-reverse"
-          }`}
-        >
+  const renderItems = messages.map(
+    ({ _id, content, user_id, user, createdAt }) => {
+      const isCurrentUserMessage = currentUser?.id === user_id;
+      const date = new Date(createdAt as string);
+      return (
+        <div key={_id} className="flex flex-col">
           <div
-            className={`w-12 md:w-24 lg:w-32 shrink-0 ${
-              isCurrentUserMessage ? "mr-auto" : "ml-auto"
+            className={`p-2 w-full flex ${
+              isCurrentUserMessage ? "flex-row" : "flex-row-reverse"
             }`}
-          ></div>
-          {isCurrentUserMessage && (
-            <div className="group relative m-1 shrink-0">
-              <button className="hover:bg-slate-300 dark:hover:bg-slate-600 p-2 rounded-full">
-                <DotsVerticalIcon className="h-4 w-4 text-slate-600 dark:text-white" />
-              </button>
-              <div className="bg-slate-50 dark:bg-slate-800 absolute z-20 right-0 py-3 rounded-lg shadow-lg hidden group-hover:block">
-                <div
-                  className=" hover:bg-slate-300 dark:hover:bg-slate-900 cursor-pointer"
-                  onClick={() => evictMessage(_id)}
-                >
-                  <div className=" flex items-center p-2">
-                    <div className=" bg-slate-400 dark:bg-slate-700 text-white p-2 rounded-full">
-                      <TrashIcon className="h-4 w-4" />
+          >
+            <div
+              className={`w-12 md:w-24 lg:w-32 shrink-0 ${
+                isCurrentUserMessage ? "mr-auto" : "ml-auto"
+              }`}
+            ></div>
+            {isCurrentUserMessage && (
+              <div className="group relative m-1 shrink-0">
+                <button className="hover:bg-slate-300 dark:hover:bg-slate-600 p-2 rounded-full">
+                  <DotsVerticalIcon className="h-4 w-4 text-slate-600 dark:text-white" />
+                </button>
+                <div className="bg-slate-50 dark:bg-slate-800 absolute z-20 right-0 py-3 rounded-lg shadow-lg hidden group-hover:block">
+                  <div
+                    className=" hover:bg-slate-300 dark:hover:bg-slate-900 cursor-pointer"
+                    onClick={() => evictMessage(_id)}
+                  >
+                    <div className=" flex items-center p-2">
+                      <div className=" bg-slate-400 dark:bg-slate-700 text-white p-2 rounded-full">
+                        <TrashIcon className="h-4 w-4" />
+                      </div>
+                      <span className="flex-auto ml-2 font-semibold">
+                        Delete
+                      </span>
                     </div>
-                    <span className="flex-auto ml-2 font-semibold">Delete</span>
                   </div>
                 </div>
               </div>
+            )}
+            <span className="px-4 py-1 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center ">
+              {content}
+            </span>
+            <div className="m-1 shrink-0">
+              <img
+                className="block h-8 w-8 rounded-full shadow-lg"
+                src={new URL(user?.avatarUrl ?? "", apiUrl).toString()}
+                alt={user?.displayName}
+              />
             </div>
-          )}
-          <span className="px-4 py-1 bg-white dark:bg-slate-800 rounded-xl shadow-lg flex items-center ">
-            {content}
-          </span>
-          <div className="m-1 shrink-0">
-            <img
-              className="block h-8 w-8 rounded-full shadow-lg"
-              src={user?.avatarUrl}
-              alt={user?.displayName}
-            />
+          </div>
+          <div
+            className={`${
+              isCurrentUserMessage ? "text-right" : "text-left"
+            } font-mono text-xs pb-1 px-2`}
+          >
+            <span>{date.toLocaleString()}</span>
           </div>
         </div>
-        <div
-          className={`${
-            isCurrentUserMessage ? "text-right" : "text-left"
-          } font-mono text-xs pb-1 px-2`}
-        >
-          <span>{date.toLocaleString()}</span>
-        </div>
-      </div>
-    );
-  });
+      );
+    }
+  );
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { XIcon } from "@heroicons/react/solid";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 
 function getColorClasses(color: string) {
   switch (color) {

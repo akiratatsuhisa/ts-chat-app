@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import {
   XIcon,
   MenuAlt1Icon,

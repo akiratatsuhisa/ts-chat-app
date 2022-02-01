@@ -24,6 +24,7 @@ export const Modal: FC<ModalProps> = ({
     return () => {
       document.body.removeChild(container);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const render = (

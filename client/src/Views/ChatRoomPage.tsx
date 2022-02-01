@@ -1,11 +1,11 @@
-import { FC, useMemo, useEffect, useState, useRef } from "react";
+import { FC, useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ChatAlt2Icon,
   InformationCircleIcon,
   ArrowLeftIcon,
 } from "@heroicons/react/solid";
-import { apiInstance, apiUrl, IChatRoom, IUser } from "../Services/Api.service";
+import { apiInstance, apiUrl, IChatRoom } from "../Services/Api.service";
 import { useAuth } from "../Contexts/AuthContext";
 import { MessagesContent } from "../Components/ChatRoom/MessagesContent";
 import { UpdateRoomContent } from "../Components/ChatRoom/UpdateRoomContent";
@@ -21,11 +21,6 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [room, setRoom] = useState<IChatRoom>();
   const mountedRef = useRef(true);
-  const users = useMemo(() => {
-    const data = {} as { [key: string]: IUser };
-    room?.users?.forEach((user) => (data[user._id] = user));
-    return data;
-  }, [room]);
 
   const onOpenSideBar = () => setIsOpen(true);
   const onCloseSideBar = () => setIsOpen(false);
@@ -58,7 +53,6 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
     socket?.on(
       "modifyUsers",
       ({ chatRoomId, users }: { chatRoomId: string; users: any[] }) => {
-        console.log("modify");
         if (chatRoomId !== id) return;
         const clone: IChatRoom = { ...(room as IChatRoom) };
         clone.users = users?.map((user) => {
@@ -98,7 +92,7 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
           </button>
         </div>
 
-        <MessagesContent users={users} />
+        <MessagesContent />
       </div>
       <div
         className={`bg-white dark:bg-slate-800 flex flex-col md:w-80 shadow-lg absolute inset-0 z-10 md:static ${

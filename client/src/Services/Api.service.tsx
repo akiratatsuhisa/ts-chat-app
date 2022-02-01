@@ -21,6 +21,7 @@ export interface IChatMessage {
   content: string;
   chatRoom_id?: string;
   user_id?: string;
+  user?: IUser;
   createdAt?: string;
   updatedAt?: string;
 }

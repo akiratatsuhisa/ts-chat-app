@@ -1,9 +1,10 @@
 import { Server as HttpServer } from "http";
 import { Server, Socket, Namespace, ServerOptions } from "socket.io";
 import { Types } from "mongoose";
+import { verifyJwtToken } from "./auth.service";
 import { ChatRoom } from "../models/ChatRoom.model";
 import { ChatMessage } from "../models/ChatMessage.model";
-import { verifyJwtToken } from "./auth.service";
+import { User } from "../models/User.model";
 var io: Server;
 
 export const getIo = function (): Server {
@@ -93,11 +94,12 @@ export const registerChatSocket = (
         content,
       });
       await chatMessage.save();
-
+      const user = await User.findById(socket.data.user.id);
       const data = {
         id: chatMessage.id,
         chatRoomId,
         userId: socket.data.user.id,
+        user: user,
         content,
         createdAt: chatMessage.createdAt,
         updatedAt: chatMessage.updatedAt,

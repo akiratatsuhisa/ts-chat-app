@@ -19,7 +19,7 @@ interface UsersContentProps {
 export const UsersContent: FC<UsersContentProps> = ({ users }) => {
   const { id } = useParams();
   const { socket } = useAuth();
-  const [show, setShow] = useState<boolean>(true);
+  const [show, setShow] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedUsers, setSelectedUsers] = useState<IUser[]>([]);
   const [items, setItems] = useState<IUser[]>([]);
@@ -64,7 +64,7 @@ export const UsersContent: FC<UsersContentProps> = ({ users }) => {
         console.error(e);
       }
       setIsLoading(false);
-    }, 2000),
+    }, 500),
     []
   );
 
@@ -133,7 +133,7 @@ export const UsersContent: FC<UsersContentProps> = ({ users }) => {
                     />
                     <div className="flex-auto mx-2">{item.displayName}</div>
                     <button
-                      className="bg-slate-300 dark:bg-slate-700 hover:bg-slate-500 dark:hover:bg-slate-500 p-2 rounded-full"
+                      className="bg-slate-300 dark:bg-slate-700 hover:bg-red-500 dark:hover:bg-red-500 p-2 rounded-full"
                       onClick={() => handleUnselectUser(item)}
                     >
                       <XIcon className="h-4 w-4 text-white" />
@@ -162,7 +162,7 @@ export const UsersContent: FC<UsersContentProps> = ({ users }) => {
                     />
                     <div className="flex-auto mx-2">{item.displayName}</div>
                     <button
-                      className="bg-slate-300 dark:bg-slate-700 hover:bg-slate-500 dark:hover:bg-slate-500 p-2 rounded-full"
+                      className="bg-slate-300 dark:bg-slate-700 hover:bg-green-500 dark:hover:bg-green-500 p-2 rounded-full"
                       onClick={() => handleSelectUser(item)}
                     >
                       <CheckIcon className="h-4 w-4 text-white" />
