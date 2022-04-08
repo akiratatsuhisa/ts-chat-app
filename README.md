@@ -1,6 +1,6 @@
 # Chat App
 
-![License](http://img.shields.io/badge/License-MIT-green.svg?style=flat)
+![license](https://img.shields.io/badge/License-MIT-green.svg)
 ![version](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)
 ![state](https://img.shields.io/badge/state-ongoing-blue.svg)
 ![test](https://img.shields.io/badge/bug-crit-red.svg)
