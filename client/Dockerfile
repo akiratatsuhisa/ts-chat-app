@@ -15,7 +15,7 @@ RUN npm run build
 
 RUN npm prune --production
 
-FROM nginx
+FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
 
