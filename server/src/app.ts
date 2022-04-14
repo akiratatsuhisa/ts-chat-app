@@ -33,7 +33,11 @@ const swaggerOptions: SwaggerUiOptions = {
   const app: Application = express();
 
   //app config
-  app.use(cors());
+  app.use(
+    cors({
+      origin: [CLIENT_UI_URL],
+    })
+  );
 
   app.use("/public", express.static("public"));
   app.use("/images", express.static("images"));

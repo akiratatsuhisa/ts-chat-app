@@ -14,7 +14,7 @@ RUN npm prune --production
 
 FROM node
 
-WORKDIR /usr/local/chat-app-ui
+WORKDIR /usr/local/chat-app-api
 
 COPY --from=builder /usr/local/chat-app-api/dist ./dist
 COPY --from=builder /usr/local/chat-app-api/node_modules ./node_modules

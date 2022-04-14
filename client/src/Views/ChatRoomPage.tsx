@@ -40,7 +40,7 @@ export const ChatRoomPage: FC<ChatRoomPageProps> = () => {
       if (!mountedRef.current) return;
       setRoom(data);
     } catch (error: any) {
-      console.log(error?.response);
+      console.error(error?.response);
     } finally {
       if (!mountedRef.current) return;
       setIsFetching(false);

@@ -44,7 +44,7 @@ export const MessagesContent: FC = () => {
           : uniqBy([...oldMessage, ...prevMessages], (x) => x._id)
       );
     } catch (error: any) {
-      console.log(error?.response);
+      console.error(error?.response);
     } finally {
       setIsFetching(false);
     }

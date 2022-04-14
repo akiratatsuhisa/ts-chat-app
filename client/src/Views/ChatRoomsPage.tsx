@@ -32,7 +32,7 @@ export const ChatRoomsPage: FC<ChatRoomsPageProps> = () => {
         reset ? data : uniqBy([...prevRooms, ...data], (room) => room._id)
       );
     } catch (error: any) {
-      console.log(error?.response);
+      console.error(error?.response);
     }
 
     setTimeout(() => {
