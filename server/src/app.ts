@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { default as express, Application } from "express";
-import { default as cors } from "cors";
+import { CorsOptions, default as cors } from "cors";
 import { default as cookieParser } from "cookie-parser";
 import { default as bodyParser } from "body-parser";
 import { default as swaggerUi, SwaggerUiOptions } from "swagger-ui-express";
@@ -14,6 +14,17 @@ import { chatRoomsRouter } from "./controllers/chatRoom.controller";
 
 const PORT: number = parseInt(process.env.PORT as string, 10);
 const CLIENT_UI_URL = process.env.CLIENT_UI_URL as string;
+
+const whitelist: Array<string> = [CLIENT_UI_URL];
+const corsOptions: CorsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.includes(origin ?? "")) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
 
 const swaggerOptions: SwaggerUiOptions = {
   explorer: true,
@@ -33,11 +44,7 @@ const swaggerOptions: SwaggerUiOptions = {
   const app: Application = express();
 
   //app config
-  app.use(
-    cors({
-      origin: [CLIENT_UI_URL],
-    })
-  );
+  app.use(cors(corsOptions));
 
   app.use("/public", express.static("public"));
   app.use("/images", express.static("images"));
