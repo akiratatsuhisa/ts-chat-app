@@ -15,17 +15,6 @@ import { chatRoomsRouter } from "./controllers/chatRoom.controller";
 const PORT: number = parseInt(process.env.PORT as string, 10);
 const CLIENT_UI_URL = process.env.CLIENT_UI_URL as string;
 
-const whitelist: Array<string> = [CLIENT_UI_URL];
-const corsOptions: CorsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.includes(origin ?? "")) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
-
 const swaggerOptions: SwaggerUiOptions = {
   explorer: true,
   swaggerOptions: {
@@ -44,7 +33,7 @@ const swaggerOptions: SwaggerUiOptions = {
   const app: Application = express();
 
   //app config
-  app.use(cors(corsOptions));
+  app.use(cors());
 
   app.use("/public", express.static("public"));
   app.use("/images", express.static("images"));
@@ -72,7 +61,7 @@ const swaggerOptions: SwaggerUiOptions = {
   const io = startSocketIo(server, {
     allowEIO3: true,
     cors: {
-      origin: [CLIENT_UI_URL],
+      origin: true,
       methods: ["GET", "POST"],
       allowedHeaders: ["Authorization"],
       credentials: true,
