@@ -12,8 +12,8 @@ import { Types } from "mongoose";
 export const chatRoomsRouter: IRouter = Router();
 
 const chatRoomListValidationChains = [
-  oneOf([query("cursor").isString(), query("size").isEmpty()]),
-  oneOf([query("size").isInt({ min: 10, max: 100 }), query("size").isEmpty()]),
+  query("cursor").optional().isString(),
+  query("size").optional().optional().isInt({ min: 10, max: 100 }),
 ];
 
 chatRoomsRouter.get(
@@ -41,9 +41,11 @@ chatRoomsRouter.get(
   }
 );
 
+const chatRoomByIdValidationChains = [param("id").notEmpty()];
+
 chatRoomsRouter.get(
   "/:id",
-  param("id").notEmpty(),
+  chatRoomByIdValidationChains,
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -161,8 +163,8 @@ chatRoomsRouter.delete(
 );
 
 const chatRoomMessagesValidationChains = [
-  oneOf([query("cursor").isString(), query("size").isEmpty()]),
-  oneOf([query("size").isInt({ min: 10, max: 100 }), query("size").isEmpty()]),
+  query("cursor").optional().isString(),
+  query("size").optional().optional().isInt({ min: 10, max: 100 }),
 ];
 
 chatRoomsRouter.get(
